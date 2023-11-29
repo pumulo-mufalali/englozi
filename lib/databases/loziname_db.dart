@@ -1,17 +1,17 @@
 import 'dart:io';
-import 'package:englozi/model/dic_model.dart';
+import 'package:englozi/model/loz_model.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DatabaseHelper {
-  static const _dbName = 'englozi.db';
-  static const _tableName = 'engTable';
+class LoziNameDB {
+  static const _dbName = 'loznameDB.db';
+  static const _tableName = 'loziTable';
   static const _dbVersion = 1;
 
-  DatabaseHelper._privateConstructor();
+  LoziNameDB._privateConstructor();
 
-  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
+  static final LoziNameDB instance = LoziNameDB._privateConstructor();
 
   static Database? _database;
 
@@ -35,33 +35,29 @@ class DatabaseHelper {
 
       ByteData data = await rootBundle.load(join('assets', _dbName));
       List<int> byte =
-          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
       await File(path).writeAsBytes(byte, flush: true);
     } else {
-      print('opening existing database in DBB');
+      print('opening existing database in lozi DB');
     }
 
     return await openDatabase(path, version: _dbVersion);
   }
-
-  Future<List<DictionaryModel>> queryAll() async {
+  Future<List<LoziDictionary>> queryAll() async {
     Database db = await instance.database;
     final List<Map<String, dynamic>> data = await db.query(_tableName);
 
-    return data.map((e) => DictionaryModel.fromMap(e)).toList();
+    return data.map((e) => LoziDictionary.fromMap(e)).toList();
   }
 
-  Future<List<DictionaryModel>> searchWords(String keyword) async {
+  Future<List<LoziDictionary>> searchWords(String keyword) async {
     Database db = await instance.database;
 
     List<Map<String, dynamic>> allRows = await db
-        .query(_tableName, where: 'word LIKE ?', whereArgs: ['$keyword%']);
-    return allRows.map((e) => DictionaryModel.fromMap(e)).toList();
+        .query(_tableName, where: 'name LIKE ?', whereArgs: ['$keyword%']);
+
+    return allRows.map((e) => LoziDictionary.fromMap(e)).toList();
   }
 
 }
-
-// WHERE word LIKE 'keyword%' -> finds word that starts with keyword
-// WHERE word LIKE '%keyword' -> finds word that ends with keyword
-// WHERE word LIKE '%keyword%' -> finds word that have keyword at any position

@@ -1,17 +1,17 @@
 import 'dart:io';
-import 'package:englozi/model/dic_model.dart';
+import 'package:englozi/model/phr_model.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DatabaseHelper {
-  static const _dbName = 'englozi.db';
-  static const _tableName = 'engTable';
+class PhrasesDB {
+  static const _dbName = 'phrasesDB.db';
+  static const _tableName = 'phrTable';
   static const _dbVersion = 1;
 
-  DatabaseHelper._privateConstructor();
+  PhrasesDB._privateConstructor();
 
-  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
+  static final PhrasesDB instance = PhrasesDB._privateConstructor();
 
   static Database? _database;
 
@@ -35,33 +35,29 @@ class DatabaseHelper {
 
       ByteData data = await rootBundle.load(join('assets', _dbName));
       List<int> byte =
-          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
       await File(path).writeAsBytes(byte, flush: true);
     } else {
-      print('opening existing database in DBB');
+      print('opening existing database in Phrases');
     }
 
     return await openDatabase(path, version: _dbVersion);
   }
 
-  Future<List<DictionaryModel>> queryAll() async {
+  Future<List<PhraseDictionary>> queryAll() async {
     Database db = await instance.database;
     final List<Map<String, dynamic>> data = await db.query(_tableName);
 
-    return data.map((e) => DictionaryModel.fromMap(e)).toList();
+    return data.map((e) => PhraseDictionary.fromMap(e)).toList();
   }
 
-  Future<List<DictionaryModel>> searchWords(String keyword) async {
+  Future<List<PhraseDictionary>> searchWords(String keyword) async {
     Database db = await instance.database;
 
     List<Map<String, dynamic>> allRows = await db
-        .query(_tableName, where: 'word LIKE ?', whereArgs: ['$keyword%']);
-    return allRows.map((e) => DictionaryModel.fromMap(e)).toList();
+        .query(_tableName, where: 'phrEnglish LIKE ?', whereArgs: ['%$keyword%']);
+    return allRows.map((e) => PhraseDictionary.fromMap(e)).toList();
   }
 
 }
-
-// WHERE word LIKE 'keyword%' -> finds word that starts with keyword
-// WHERE word LIKE '%keyword' -> finds word that ends with keyword
-// WHERE word LIKE '%keyword%' -> finds word that have keyword at any position

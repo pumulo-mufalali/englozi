@@ -6,13 +6,14 @@ class DictionaryModel {
   String? description;
   String? phrase;
   String? verb;
-  String t_verb;
-  String i_verb;
+  String? t_verb;
+  String? i_verb;
   String? adjective;
   String? adverb;
   String? preposition;
   String? synonym;
   String? antonym;
+  String? conjunction;
 
   DictionaryModel({
     required this.id,
@@ -22,13 +23,14 @@ class DictionaryModel {
     this.description,
     this.phrase,
     this.verb,
-    required this.t_verb,
-    required this.i_verb,
+    this.t_verb,
+    this.i_verb,
     this.adjective,
     this.adverb,
     this.preposition,
     this.synonym,
     this.antonym,
+    this.conjunction
   });
 
   factory DictionaryModel.fromMap(Map<String, dynamic> json) => DictionaryModel(
@@ -45,7 +47,8 @@ class DictionaryModel {
       adverb: json['adverb'],
       preposition: json['preposition'],
       synonym: json['synonym'],
-      antonym: json['antonym']
+      antonym: json['antonym'],
+      conjunction: json['conjunction'],
   );
 
 }

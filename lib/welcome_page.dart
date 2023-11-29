@@ -1,3 +1,4 @@
+import 'package:englozi/features/drawer.dart';
 import 'package:englozi/pages/dictionary_page.dart';
 import 'package:englozi/pages/names_page.dart';
 import 'package:englozi/pages/phrases_page.dart';
@@ -15,16 +16,13 @@ class _WelcomePageState extends State<WelcomePage> {
   int _focuses = 1;
   List<String> cards = ['PHRASES', 'DICTIONARY', 'LOZI NAMES'];
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   void _onItemFocus(int index) {
     setState(() {
       _focuses = index;
     });
   }
+
+  final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey();
 
   Widget _buildItemList(BuildContext context, int index) {
     if (_focuses == cards.length) {
@@ -32,42 +30,49 @@ class _WelcomePageState extends State<WelcomePage> {
         child: CircularProgressIndicator(),
       );
     } else {
-      return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Card(
-          elevation: 15.0,
-          color: Colors.teal,
-          child: ClipRRect(
-            child: SizedBox(
-              width: 250,
-              height: 350,
-              child: InkWell(
-                child: Center(
-                  child: Text(
-                    cards[index],
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 35.0,
-                      fontWeight: FontWeight.bold,
+      return SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 60,),
+            Card(
+              elevation: 15.0,
+              color: Colors.teal,
+              child: ClipRRect(
+                child: SizedBox(
+                  width: 250,
+                  height: 350,
+                  child: InkWell(
+                    child: Center(
+                      child: Text(
+                        cards[index],
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 35.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
+                    onTap: () async {
+                      if (cards[_focuses] == cards[0]) {
+                        await Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const PhrasesPage()));
+                      } else if (cards[index] == cards[1]) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const DictionaryPage()));
+                      } else {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const NamesPage()));
+                      }
+                    },
                   ),
                 ),
-                onTap: () async {
-                  if (cards[_focuses] == cards[0]) {
-                    await Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const PhrasesPage()));
-                  } else if (cards[index] == cards[1]) {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const DictionaryPage()));
-                  } else {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const NamesPage()));
-                  }
-                },
               ),
             ),
-          ),
+          ],
         ),
-      ]);
+      );
     }
   }
 
@@ -75,158 +80,73 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.teal,
+        foregroundColor: Colors.white,
+        elevation: 0.0,
+        leading: IconButton(
+          onPressed: () {
+            if (_scaffoldkey.currentState?.isDrawerOpen == false) {
+              _scaffoldkey.currentState!.openDrawer();
+            } else {
+              _scaffoldkey.currentState?.openEndDrawer();
+            }
+          },
+          icon: const Icon(Icons.dehaze),
+        ),
         title: RichText(
           text: TextSpan(
-              text: 'Eng',
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 27.0,
-                fontWeight: FontWeight.bold,
-              ),
-              children: [
-                TextSpan(
-                  text: 'lozi',
-                  style: TextStyle(
-                    color: Colors.red.shade700,
-                    fontSize: 27.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+            text: 'Eng',
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 27.0,
+              fontWeight: FontWeight.bold,
+            ),
+            children: [
+              TextSpan(
+                text: 'lozi',
+                style: TextStyle(
+                  color: Colors.red.shade700,
+                  fontSize: 27.0,
+                  fontWeight: FontWeight.bold,
                 ),
-              ]),
+              ),
+            ],
+          ),
         ),
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            InkWell(
-              child: UserAccountsDrawerHeader(
-                accountName: RichText(
-                  text: TextSpan(
-                      text: 'Eng',
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: 'lozi',
-                          style: TextStyle(
-                            color: Colors.red.shade700,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ]),
-                ),
-                accountEmail: const Text(
-                  'Enjoy learning',
-                ),
-                currentAccountPicture: GestureDetector(
-                  child: const CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    child: Icon(Icons.bookmarks),
-                  ),
-                ),
+      body: Scaffold(
+        resizeToAvoidBottomInset: true,
+        drawer: const DrawerPage(),
+        key: _scaffoldkey,
+        body: Column(
+          children: [
+            const SizedBox(
+              height: 10,
+            ),
+            const Text(
+              ' << Swipe >> ',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 25.0,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            InkWell(
-              child: const ListTile(
-                iconColor: Colors.teal,
-                leading: Icon(Icons.bookmark),
-                title: Text('Bookmarks'),
+            Expanded(
+              child: ScrollSnapList(
+                itemBuilder: _buildItemList,
+                itemSize: 250,
+                initialIndex: 1,
+                duration: 100,
+                itemCount: cards.length,
+                dynamicItemSize: true,
+                onItemFocus: _onItemFocus,
               ),
-              onTap: () {},
             ),
-            const Divider(
-              color: Colors.white70,
-              height: 15,
-            ),
-            InkWell(
-              child: const ListTile(
-                iconColor: Colors.teal,
-                leading: Icon(Icons.settings),
-                title: Text('Settings'),
-              ),
-              onTap: () {},
-            ),
-            const Divider(
-              color: Colors.white70,
-              height: 15,
-            ),
-            InkWell(
-              child: const ListTile(
-                iconColor: Colors.teal,
-                leading: Icon(Icons.history),
-                title: Text('History'),
-              ),
-              onTap: () {},
-            ),
-            const Divider(
-              color: Colors.white70,
-              height: 15,
-            ),
-            InkWell(
-              child: const ListTile(
-                iconColor: Colors.teal,
-                leading: Icon(Icons.ad_units),
-                title: Text('About'),
-              ),
-              onTap: () {},
-            ),
-            const Divider(
-              color: Colors.white70,
-              height: 15,
-            ),
-            InkWell(
-              child: const ListTile(
-                iconColor: Colors.teal,
-                leading: Icon(Icons.help_outline),
-                title: Text('Help'),
-              ),
-              onTap: () {},
-            ),
-            const Divider(
-              color: Colors.white70,
-              height: 15,
-            ),
-            InkWell(
-              child: const ListTile(
-                iconColor: Colors.black,
-                leading: Icon(Icons.cancel),
-                title: Text('Exit'),
-              ),
-              onTap: () {},
+            const SizedBox(
+              height: 15.0,
             ),
           ],
         ),
-      ),
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          const Text(
-            ' << Swipe >> ',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 25.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Expanded(
-            child: ScrollSnapList(
-              itemBuilder: _buildItemList,
-              itemSize: 250,
-              initialIndex: 1,
-              duration: 100,
-              itemCount: cards.length,
-              dynamicItemSize: true,
-              onItemFocus: _onItemFocus,
-            ),
-          ),
-          const SizedBox(
-            height: 15.0,
-          ),
-        ],
       ),
     );
   }
