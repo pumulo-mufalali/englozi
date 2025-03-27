@@ -1,6 +1,6 @@
 # Englozi
 
-Learn the Lozi Language with Ease...
+## Learn the Lozi Language with Ease...
 
 Englozi is a language-learning tool (with over 20000 words) designed to help users master the Lozi language, whether they're complete beginners or advanced learners. With a comprehensive database of words, from basic to advanced, Englozi makes learning Lozi accessible and efficient.
 
