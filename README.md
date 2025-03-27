@@ -1,4 +1,4 @@
-#Englozi
+# Englozi
 
 Learn the Lozi Language with Ease...
 
