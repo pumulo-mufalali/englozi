@@ -22,37 +22,36 @@ class WordDetails extends StatefulWidget {
   String? antonym;
   String? conjunction;
 
-  WordDetails({super.key,
-    required this.word,
-    this.noun,
-    this.plural,
-    this.description,
-    this.phrase,
-    this.verb,
-    this.t_verb,
-    this.i_verb,
-    this.adjective,
-    this.adverb,
-    this.preposition,
-    this.synonym,
-    this.antonym,
-    this.conjunction});
+  WordDetails(
+      {super.key,
+      required this.word,
+      this.noun,
+      this.plural,
+      this.description,
+      this.phrase,
+      this.verb,
+      this.t_verb,
+      this.i_verb,
+      this.adjective,
+      this.adverb,
+      this.preposition,
+      this.synonym,
+      this.antonym,
+      this.conjunction});
 
   @override
   State<WordDetails> createState() => _WordDetailsState();
 }
 
 class _WordDetailsState extends State<WordDetails> {
-  late DatabaseHelper dbHelper;
-  late DatabaseFavourite dbFavourite;
-
-  final FlutterTts flutterTts = FlutterTts();
-  late List<DictionaryModel> words;
-  List<Favourite> wordz = [];
+  bool _isFavourited = false;
+  late DatabaseFavourite dbFavourite = DatabaseFavourite.instance;
 
   @override
   void initState() {
     super.initState();
+    _checkFavoriteStatus();
+
     dbHelper = DatabaseHelper.instance;
     dbHelper.database;
 
@@ -61,10 +60,32 @@ class _WordDetailsState extends State<WordDetails> {
     getData();
   }
 
+  Future<void> _checkFavoriteStatus() async {
+    _isFavourited = await dbFavourite.isWordFavourited(widget.word);
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _toggleFavourite() async {
+    if (_isFavourited) {
+      await dbFavourite.deleteFavouriteByWord(widget.word);
+    } else {
+      await dbFavourite.insertFavourite(
+        Favourite(word: widget.word, isPressed: true),
+      );
+    }
+    setState(() => _isFavourited = !_isFavourited);
+  }
+
+  late DatabaseHelper dbHelper;
+
+  final FlutterTts flutterTts = FlutterTts();
+  late List<DictionaryModel> words;
+  List<Favourite> wordz = [];
+
   bool? isPressed;
 
   void getData() async {
-    List<Favourite> result = await dbFavourite.queryAll();
+    List<Favourite> result = await dbFavourite.getAllFavourites();
     setState(() {
       wordz = result;
     });
@@ -81,7 +102,7 @@ class _WordDetailsState extends State<WordDetails> {
     if (result.isEmpty) {
       results = [];
     } else {
-      results = await dbFavourite.queryAll();
+      results = await dbFavourite.getAllFavourites();
     }
     setState(() {
       result = results;
@@ -118,7 +139,45 @@ class _WordDetailsState extends State<WordDetails> {
       appBar: AppBar(
         backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
-        title: const Text('DICTIONARY'),
+        title: RichText(
+          text: TextSpan(
+            text: widget.word[0].toUpperCase(), // WORD
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15.5,
+              fontStyle: FontStyle.normal,
+              fontWeight: FontWeight.normal,
+            ),
+            children: [
+              TextSpan(
+                text: widget.word.substring(1, widget.word.length),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 15.5,
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () => {speak(widget.word)},
+            icon: const Icon(Icons.volume_up),
+          ),
+          Container(
+            height: 20,  // Matches IconButton height
+            width: 2,
+            color: Colors.white.withOpacity(0.3),
+            margin: const EdgeInsets.symmetric(horizontal: 12),
+          ),
+          IconButton(
+            onPressed: () => {_toggleFavourite(),},
+            icon: Icon(_isFavourited ? Icons.favorite : Icons.favorite_border),
+            color: Colors.redAccent,
+          ),
+        ],
         centerTitle: false,
         automaticallyImplyLeading: true,
         elevation: 0.0,
@@ -132,95 +191,67 @@ class _WordDetailsState extends State<WordDetails> {
               const SizedBox(
                 height: 12.0,
               ),
-              ListTile(
-                trailing: IconButton(
-                  onPressed: () => speak(widget.word),
-                  icon: const Icon(Icons.volume_up, color: Colors.teal),
-                ),
-                title: RichText(
-                  text: TextSpan(
-                    text: widget.word[0].toUpperCase(), // WORD
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 23.5,
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: widget.word.substring(1, widget.word.length),
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 23.5,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
               widget.description!.isNotEmpty
                   ? const SizedBox(
-                height: 10.0,
-              )
+                      height: 10.0,
+                    )
                   : const SizedBox(),
               widget.description!.isNotEmpty
                   ? const Divider(
-                height: 0.0,
-                color: Colors.grey,
-                thickness: 2.5,
-                endIndent: 15.0,
-                indent: 15.0,
-              )
-                  : const SizedBox(
-                height: 0.0,
-              ),
-              widget.description!.isNotEmpty ?
-              Padding(
-                padding: const EdgeInsets.only(left: 0.0),
-                child: ListTile(
-                  title:
-                    widget.description!.isNotEmpty //DESCRIPTION
-                        ? RichText(
-                      text: TextSpan(
-                        text: widget.description![0].toUpperCase(),
-                        style: const TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.grey,
-                            fontStyle: FontStyle.italic),
-                        children: [
-                          TextSpan(
-                            text: widget.description!
-                                .substring(1, widget.description!.length),
-                            style: const TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.grey,
-                                fontStyle: FontStyle.italic),
-                          ),
-                        ],
-                      ),
+                      height: 0.0,
+                      color: Colors.grey,
+                      thickness: 2.5,
+                      endIndent: 15.0,
+                      indent: 15.0,
                     )
-                        : const SizedBox(
+                  : const SizedBox(
                       height: 0.0,
                     ),
-                ),
-              ) : const SizedBox(),
+              widget.description!.isNotEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 0.0),
+                      child: ListTile(
+                        title: widget.description!.isNotEmpty //DESCRIPTION
+                            ? RichText(
+                                text: TextSpan(
+                                  text: widget.description![0].toUpperCase(),
+                                  style: const TextStyle(
+                                      fontSize: 20.0,
+                                      color: Colors.grey,
+                                      fontStyle: FontStyle.italic),
+                                  children: [
+                                    TextSpan(
+                                      text: widget.description!.substring(
+                                          1, widget.description!.length),
+                                      style: const TextStyle(
+                                          fontSize: 20.0,
+                                          color: Colors.grey,
+                                          fontStyle: FontStyle.italic),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox(
+                                height: 0.0,
+                              ),
+                      ),
+                    )
+                  : const SizedBox(),
               widget.description!.isNotEmpty
                   ? const SizedBox(
-                height: 5.0,
-              )
+                      height: 5.0,
+                    )
                   : const SizedBox(height: 10.0),
               Column(
                 children: [
                   widget.noun!.isNotEmpty
                       ? const Divider(
-                    height: 0.0,
-                    color: Colors.grey,
-                    thickness: 2.5,
-                    endIndent: 15.0,
-                    indent: 15.0,
-                  )
+                          height: 0.0,
+                          color: Colors.grey,
+                          thickness: 2.5,
+                          endIndent: 15.0,
+                          indent: 15.0,
+                        )
                       : const SizedBox(),
                   if (widget.noun!.isNotEmpty) // NOUN
                     ListTile(
@@ -244,12 +275,12 @@ class _WordDetailsState extends State<WordDetails> {
                     const SizedBox(),
                   widget.plural!.isNotEmpty
                       ? const Divider(
-                    height: 0.0,
-                    color: Colors.grey,
-                    thickness: 2.5,
-                    endIndent: 15.0,
-                    indent: 15.0,
-                  )
+                          height: 0.0,
+                          color: Colors.grey,
+                          thickness: 2.5,
+                          endIndent: 15.0,
+                          indent: 15.0,
+                        )
                       : const SizedBox(),
                   if (widget.plural!.isNotEmpty) // PLURAL
                     ListTile(
@@ -274,12 +305,12 @@ class _WordDetailsState extends State<WordDetails> {
                     const SizedBox(),
                   widget.verb!.isNotEmpty
                       ? const Divider(
-                    height: 0.0,
-                    color: Colors.grey,
-                    thickness: 2.5,
-                    endIndent: 15.0,
-                    indent: 15.0,
-                  )
+                          height: 0.0,
+                          color: Colors.grey,
+                          thickness: 2.5,
+                          endIndent: 15.0,
+                          indent: 15.0,
+                        )
                       : const SizedBox(),
                   if (widget.verb!.isNotEmpty) // TRANSITIVE VERB
                     ListTile(
@@ -303,12 +334,12 @@ class _WordDetailsState extends State<WordDetails> {
                     const SizedBox(),
                   widget.t_verb!.isNotEmpty
                       ? const Divider(
-                    height: 0.0,
-                    color: Colors.grey,
-                    thickness: 2.5,
-                    endIndent: 15.0,
-                    indent: 15.0,
-                  )
+                          height: 0.0,
+                          color: Colors.grey,
+                          thickness: 2.5,
+                          endIndent: 15.0,
+                          indent: 15.0,
+                        )
                       : const SizedBox(),
                   if (widget.t_verb!.isNotEmpty) // TRANSITIVE VERB
                     ListTile(
@@ -332,12 +363,12 @@ class _WordDetailsState extends State<WordDetails> {
                     const SizedBox(),
                   widget.i_verb!.isNotEmpty
                       ? const Divider(
-                    height: 0.0,
-                    color: Colors.grey,
-                    thickness: 2.5,
-                    endIndent: 15.0,
-                    indent: 15.0,
-                  )
+                          height: 0.0,
+                          color: Colors.grey,
+                          thickness: 2.5,
+                          endIndent: 15.0,
+                          indent: 15.0,
+                        )
                       : const SizedBox(),
                   if (widget.i_verb!.isNotEmpty) // INTRANSITIVE VERB
                     ListTile(
@@ -361,12 +392,12 @@ class _WordDetailsState extends State<WordDetails> {
                     const SizedBox(),
                   widget.phrase!.isNotEmpty
                       ? const Divider(
-                    height: 0.0,
-                    color: Colors.grey,
-                    thickness: 2.5,
-                    endIndent: 15.0,
-                    indent: 15.0,
-                  )
+                          height: 0.0,
+                          color: Colors.grey,
+                          thickness: 2.5,
+                          endIndent: 15.0,
+                          indent: 15.0,
+                        )
                       : const SizedBox(),
                   if (widget.phrase!.isNotEmpty) // PHRASE
                     ListTile(
@@ -390,12 +421,12 @@ class _WordDetailsState extends State<WordDetails> {
                     const SizedBox(),
                   widget.adjective!.isNotEmpty
                       ? const Divider(
-                    height: 0.0,
-                    color: Colors.grey,
-                    thickness: 2.5,
-                    endIndent: 15.0,
-                    indent: 15.0,
-                  )
+                          height: 0.0,
+                          color: Colors.grey,
+                          thickness: 2.5,
+                          endIndent: 15.0,
+                          indent: 15.0,
+                        )
                       : const SizedBox(),
                   if (widget.adjective!.isNotEmpty) // ADJECTIVE
                     ListTile(
@@ -419,12 +450,12 @@ class _WordDetailsState extends State<WordDetails> {
                     const SizedBox(),
                   widget.adverb!.isNotEmpty
                       ? const Divider(
-                    height: 0.0,
-                    color: Colors.grey,
-                    thickness: 2.5,
-                    endIndent: 15.0,
-                    indent: 15.0,
-                  )
+                          height: 0.0,
+                          color: Colors.grey,
+                          thickness: 2.5,
+                          endIndent: 15.0,
+                          indent: 15.0,
+                        )
                       : const SizedBox(),
                   if (widget.adverb!.isNotEmpty) // ADVERB
                     ListTile(
@@ -448,12 +479,12 @@ class _WordDetailsState extends State<WordDetails> {
                     const SizedBox(),
                   widget.conjunction!.isNotEmpty
                       ? const Divider(
-                    height: 0.0,
-                    color: Colors.grey,
-                    thickness: 2.5,
-                    endIndent: 15.0,
-                    indent: 15.0,
-                  )
+                          height: 0.0,
+                          color: Colors.grey,
+                          thickness: 2.5,
+                          endIndent: 15.0,
+                          indent: 15.0,
+                        )
                       : const SizedBox(),
                   if (widget.conjunction!.isNotEmpty) // PREPOSITION
                     ListTile(
@@ -477,12 +508,12 @@ class _WordDetailsState extends State<WordDetails> {
                     const SizedBox(),
                   widget.preposition!.isNotEmpty
                       ? const Divider(
-                    height: 0.0,
-                    color: Colors.grey,
-                    thickness: 2.5,
-                    endIndent: 15.0,
-                    indent: 15.0,
-                  )
+                          height: 0.0,
+                          color: Colors.grey,
+                          thickness: 2.5,
+                          endIndent: 15.0,
+                          indent: 15.0,
+                        )
                       : const SizedBox(),
                   if (widget.preposition!.isNotEmpty) // PREPOSITION
                     ListTile(
@@ -506,12 +537,12 @@ class _WordDetailsState extends State<WordDetails> {
                     const SizedBox(),
                   widget.synonym!.isNotEmpty
                       ? const Divider(
-                    height: 0.0,
-                    color: Colors.grey,
-                    thickness: 2.5,
-                    endIndent: 15.0,
-                    indent: 15.0,
-                  )
+                          height: 0.0,
+                          color: Colors.grey,
+                          thickness: 2.5,
+                          endIndent: 15.0,
+                          indent: 15.0,
+                        )
                       : const SizedBox(),
                   if (widget.synonym!.isNotEmpty) // SYNONYM
                     ListTile(
@@ -535,12 +566,12 @@ class _WordDetailsState extends State<WordDetails> {
                     const SizedBox(),
                   widget.antonym!.isNotEmpty
                       ? const Divider(
-                    height: 0.0,
-                    color: Colors.grey,
-                    thickness: 2.5,
-                    endIndent: 15.0,
-                    indent: 15.0,
-                  )
+                          height: 0.0,
+                          color: Colors.grey,
+                          thickness: 2.5,
+                          endIndent: 15.0,
+                          indent: 15.0,
+                        )
                       : const SizedBox(),
                   if (widget.antonym!.isNotEmpty) // ANTONYM
                     ListTile(
@@ -562,37 +593,6 @@ class _WordDetailsState extends State<WordDetails> {
                     )
                   else
                     const SizedBox(),
-                  // const SizedBox(height: 20.0),
-                  // const Divider(
-                  //   height: 0.0,
-                  //   color: Colors.blue,
-                  //   thickness: 2.0,
-                  //   endIndent: 115.0,
-                  //   indent: 115.0,
-                  // ),
-                  // IconButton(
-                  //   icon: Icon(isPressed!
-                  //       ? Icons.favorite_outlined
-                  //       : Icons.favorite_border_rounded, color: Colors.red,
-                  //   ),
-                  //   onPressed: () async {
-                  //     if (isPressed == false) {
-                  //       await dbFavourite.insert(
-                  //         Favourite(
-                  //           word: widget.word,
-                  //         ),
-                  //       );
-                  //     setState(() {
-                  //       isPressed = true;
-                  //     });
-                  //   }else {
-                  //       await dbFavourite.delete(0); // DOES NOT WORK
-                  //       setState(() {
-                  //         isPressed = false;
-                  //       });
-                  //     }
-                  //   },
-                  // ),
                 ],
               ),
             ],

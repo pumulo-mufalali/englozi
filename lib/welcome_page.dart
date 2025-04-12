@@ -127,7 +127,7 @@ class _WelcomePageState extends State<WelcomePage> {
               ' << Swipe >> ',
               style: TextStyle(
                 color: Colors.grey,
-                fontSize: 25.0,
+                fontSize: 35.0,
                 fontWeight: FontWeight.bold,
               ),
             ),

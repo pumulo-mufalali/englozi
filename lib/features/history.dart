@@ -1,9 +1,10 @@
-import 'package:englozi/databases/dictionary_db.dart';
-import 'package:englozi/databases/history_db.dart';
-import 'package:englozi/model/dic_model.dart';
-import 'package:englozi/model/his_model.dart';
-import 'package:englozi/pages/word_details_page.dart';
 import 'package:flutter/material.dart';
+
+import '../databases/dictionary_db.dart';
+import '../databases/history_db.dart';
+import '../model/dic_model.dart';
+import '../model/his_model.dart';
+import '../pages/word_details_page.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({Key? key}) : super(key: key);
@@ -15,232 +16,245 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   late DatabaseHistory dbHistory;
   late DatabaseHelper dbHelper;
-
   List<History> words = [];
+  bool _isDeletingAll = false;
 
   @override
   void initState() {
     super.initState();
     dbHistory = DatabaseHistory.instance;
-    dbHistory.database;
-
     dbHelper = DatabaseHelper.instance;
-    dbHelper.database;
-    getData();
+    _loadHistory();
   }
 
-  void getData() async {
-    List<History> result = await dbHistory.queryAll();
-    setState(() {
-      words = result;
-    });
+  Future<void> _loadHistory() async {
+    final result = await dbHistory.queryAll();
+    setState(() => words = result.reversed.toList()); // Newest first
   }
 
-  List<DictionaryModel> _foundWords = [];
+  Future<void> _deleteItem(int id) async {
+    await dbHistory.delete(id);
+    _loadHistory();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Deleted from history'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
 
-  _filters(String? key) async {
-    List<DictionaryModel> results = [];
-    if (key!.isEmpty) {
-      results = [];
-    } else {
-      results = await dbHelper.searchWords(key);
+  Future<void> _deleteAllItems() async {
+    setState(() => _isDeletingAll = true);
+    for (final item in words) {
+      await dbHistory.delete(item.id!);
     }
     setState(() {
-      _foundWords = results;
+      words = [];
+      _isDeletingAll = false;
     });
-  }
-
-  void _delete(BuildContext context, History history) async {
-    int result = await dbHistory.delete(history.id!);
-    if (result != 0) {
-      _showSnackBar(context, 'Deleted');
-    }
-    updateHistoryList();
-  }
-
-  void _deleteAll(BuildContext context, History history) async {
-    await dbHistory.deleteAll(history.id!);
-    updateHistoryList();
-  }
-
-  void _showSnackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(content: Text(message));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  void updateHistoryList() {
-    Future<List<History>> historyFuture = dbHistory.queryAll();
-    historyFuture.then((value) {
-      setState(() {
-        words = value;
-      });
-    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('History cleared'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
-        elevation: 0.0,
-        title: const Text('History'),
+        backgroundColor: Colors.teal,
+        title: const Text(
+          'History',
+          style: TextStyle(
+            fontWeight: FontWeight.normal,
+          ),
+        ),
         centerTitle: true,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.auto_delete),
-            onPressed: () async {
-              words.isNotEmpty
-                  ? showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text(
-                            "Delete",
-                            style: TextStyle(
-                                fontSize: 24.0,
-                                color: Colors.blueGrey,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          content: const Text(
-                            "Are you sure you want to delete all",
-                            style: TextStyle(
-                              color: Colors.red,
-                            ),
-                          ),
-                          actions: [
-                            OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  side: const BorderSide(
-                                      color: Colors.white) //<-- SEE HERE
-                                  ),
-                              child: const Text(
-                                'No',
-                                style: TextStyle(
-                                  color: Colors.blueGrey,
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  side: const BorderSide(color: Colors.white)),
-                              child: const Text(
-                                'Yes',
-                                style: TextStyle(
-                                  color: Colors.blueGrey,
-                                ),
-                              ),
-                              onPressed: () {
-                                for (int i = 0; i < words.length; i++) {
-                                  _deleteAll(context, words[i]);
-                                }
-                                _showSnackBar(context, 'Deleted all');
-
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                          elevation: 12.0,
-                          backgroundColor: Colors.white,
-                        );
-                      },
-                    )
-                  : showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text("Sorry!!!"),
-                          content: const Text("No content in history"),
-                          actions: [
-                            OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  side: const BorderSide(
-                                      color: Colors.white) //<-- SEE HERE
-                                  ),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text("OK"),
-                            )
-                          ],
-                        );
-                      });
-            },
-          ),
+          if (words.isNotEmpty)
+            IconButton(
+              icon: _isDeletingAll
+                  ? const CircularProgressIndicator(color: Colors.redAccent)
+                  : const Icon(Icons.delete),
+              onPressed: _isDeletingAll ? null : _confirmClearAll,
+              tooltip: 'Clear all history',
+            ),
         ],
       ),
-      body: words.isNotEmpty
-          ? ListView.builder(
-              itemCount: words.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Card(
-                  color: Colors.grey,
-                  shape: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(
-                      0.0,
+      body: words.isEmpty
+          ? _buildEmptyState()
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ListView.separated(
+                      itemCount: words.length,
+                      separatorBuilder: (_, __) => const Divider(height: 1),
+                      itemBuilder: (context, index) =>
+                          _buildHistoryItem(words[index]),
                     ),
                   ),
-                  child: ListTile(
-                    title: Text(
-                      words[words.length - (index + 1)].word,
-                      style: const TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                    trailing: GestureDetector(
-                      child: const Icon(
-                        Icons.delete,
-                        color: Colors.redAccent,
-                      ),
-                      onTap: () {
-                        _delete(context, words[words.length - (index + 1)]);
-                      },
-                    ),
-                    onTap: () async {
-                      int id = words.length - (index + 1);
-                      await _filters(words[id].word);
-                      _foundWords[0].word == words[id].word
-                          ? Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => WordDetails(
-                                    word: _foundWords[0].word,
-                                    noun: _foundWords[0].noun,
-                                    plural: _foundWords[0].plural,
-                                    description: _foundWords[0].description,
-                                    phrase: _foundWords[0].phrase,
-                                    verb: _foundWords[0].verb,
-                                    t_verb: _foundWords[0].t_verb,
-                                    i_verb: _foundWords[0].i_verb,
-                                    adjective: _foundWords[0].adjective,
-                                    adverb: _foundWords[0].adverb,
-                                    preposition: _foundWords[0].preposition,
-                                    synonym: _foundWords[0].synonym,
-                                    antonym: _foundWords[0].antonym,
-                                    conjunction: _foundWords[0].conjunction),
-                              ),
-                            )
-                          : await _filters(words[id].word);
-                    },
-                  ),
-                );
-              })
-          : const Center(
-              child: Text(
-                'No item',
-                // style: TextStyle(
-                //   fontStyle: FontStyle.italic,
-                // ),
+                ],
               ),
             ),
     );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.history, size: 64, color: Colors.grey[400]),
+          const SizedBox(height: 16),
+          Text(
+            'No history yet',
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.grey[600],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Search words to see them here',
+            style: TextStyle(color: Colors.grey[500]),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHistoryItem(History item) {
+    return Dismissible(
+      key: Key(item.id.toString()),
+      background: Container(
+        color: Colors.redAccent,
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 15),
+        child: const Icon(Icons.delete, color: Colors.white),
+      ),
+      direction: DismissDirection.endToStart,
+      confirmDismiss: (direction) async {
+        return await showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text(
+              "Confirm Delete",
+              style: TextStyle(color: Colors.redAccent),
+            ),
+            content: const Text("Remove this word from history?"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child:
+                    const Text("Delete", style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          ),
+        );
+      },
+      onDismissed: (_) => _deleteItem(item.id!),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(2),
+        onTap: () => _navigateToWordDetails(item.word),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 2,
+            vertical: 2,
+          ),
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(17),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  item.word,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.chevron_right),
+                color: Colors.grey,
+                onPressed: () => _navigateToWordDetails(item.word),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _navigateToWordDetails(String word) async {
+    final results = await dbHelper.searchWords(word);
+    if (results.isNotEmpty && mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => WordDetails(
+            word: results.first.word,
+            noun: results.first.noun,
+            plural: results.first.plural,
+            description: results.first.description,
+            phrase: results.first.phrase,
+            verb: results.first.verb,
+            t_verb: results.first.t_verb,
+            i_verb: results.first.i_verb,
+            adjective: results.first.adjective,
+            adverb: results.first.adverb,
+            preposition: results.first.preposition,
+            synonym: results.first.synonym,
+            antonym: results.first.antonym,
+            conjunction: results.first.conjunction,
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _confirmClearAll() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          "Clear All History",
+          style: TextStyle(color: Colors.redAccent),
+        ),
+        content: const Text(
+            "This will permanently remove all items from your history."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text(
+              "Cancel",
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text("Clear", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await _deleteAllItems();
+    }
   }
 }
