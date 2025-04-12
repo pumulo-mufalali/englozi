@@ -60,6 +60,47 @@ class _WordDetailsState extends State<WordDetails> {
     getData();
   }
 
+  TextSpan _buildStyledText(String text) {
+    final regex = RegExp(r'(\(.*?\))');
+    final matches = regex.allMatches(text);
+    final List<TextSpan> spans = [];
+    int lastEnd = 0;
+
+    for (final match in matches) {
+      if (match.start > lastEnd) {
+        spans.add(
+          TextSpan(
+            text: text.substring(lastEnd, match.start),
+            style: const TextStyle(color: Colors.black),
+          ),
+        );
+      }
+
+      spans.add(
+        TextSpan(
+          text: match.group(0),
+          style: const TextStyle(
+            color: Colors.blue,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+      );
+
+      lastEnd = match.end;
+    }
+
+    if (lastEnd < text.length) {
+      spans.add(
+        TextSpan(
+          text: text.substring(lastEnd),
+          style: const TextStyle(color: Colors.black),
+        ),
+      );
+    }
+
+    return TextSpan(children: spans);
+  }
+
   Future<void> _checkFavoriteStatus() async {
     _isFavourited = await dbFavourite.isWordFavourited(widget.word);
     if (mounted) setState(() {});
@@ -167,13 +208,15 @@ class _WordDetailsState extends State<WordDetails> {
             icon: const Icon(Icons.volume_up),
           ),
           Container(
-            height: 20,  // Matches IconButton height
+            height: 20, // Matches IconButton height
             width: 2,
             color: Colors.white.withOpacity(0.3),
             margin: const EdgeInsets.symmetric(horizontal: 12),
           ),
           IconButton(
-            onPressed: () => {_toggleFavourite(),},
+            onPressed: () => {
+              _toggleFavourite(),
+            },
             icon: Icon(_isFavourited ? Icons.favorite : Icons.favorite_border),
             color: Colors.redAccent,
           ),
@@ -240,10 +283,10 @@ class _WordDetailsState extends State<WordDetails> {
                           indent: 15.0,
                         )
                       : const SizedBox(),
-                  if (widget.noun!.isNotEmpty) // NOUN
+                  if (widget.noun!.isNotEmpty)
                     ListTile(
                       title: const Text(
-                        'Noun \n',
+                        'Noun',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
@@ -251,12 +294,8 @@ class _WordDetailsState extends State<WordDetails> {
                           fontSize: 16.5,
                         ),
                       ),
-                      subtitle: Text(
-                        widget.noun!,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.5,
-                        ),
+                      subtitle: RichText(
+                        text: _buildStyledText(widget.noun!),
                       ),
                     )
                   else
@@ -270,10 +309,10 @@ class _WordDetailsState extends State<WordDetails> {
                           indent: 15.0,
                         )
                       : const SizedBox(),
-                  if (widget.plural!.isNotEmpty) // PLURAL
+                  if (widget.plural!.isNotEmpty)
                     ListTile(
                       title: const Text(
-                        'Plural noun(s) \n',
+                        'Plural noun',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
@@ -281,13 +320,8 @@ class _WordDetailsState extends State<WordDetails> {
                           fontSize: 16.5,
                         ),
                       ),
-                      subtitle: Text(
-                        widget.plural!,
-                        style: const TextStyle(
-                          fontStyle: FontStyle.italic,
-                          color: Colors.black,
-                          fontSize: 16.5,
-                        ),
+                      subtitle: RichText(
+                        text: _buildStyledText(widget.plural!),
                       ),
                     )
                   else
@@ -301,10 +335,10 @@ class _WordDetailsState extends State<WordDetails> {
                           indent: 15.0,
                         )
                       : const SizedBox(),
-                  if (widget.verb!.isNotEmpty) // TRANSITIVE VERB
+                  if (widget.verb!.isNotEmpty)
                     ListTile(
                       title: const Text(
-                        'Verb \n',
+                        'Verb',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
@@ -312,12 +346,8 @@ class _WordDetailsState extends State<WordDetails> {
                           fontSize: 16.5,
                         ),
                       ),
-                      subtitle: Text(
-                        widget.verb!,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.5,
-                        ),
+                      subtitle: RichText(
+                        text: _buildStyledText(widget.verb!),
                       ),
                     )
                   else
@@ -331,10 +361,10 @@ class _WordDetailsState extends State<WordDetails> {
                           indent: 15.0,
                         )
                       : const SizedBox(),
-                  if (widget.t_verb!.isNotEmpty) // TRANSITIVE VERB
+                  if (widget.t_verb!.isNotEmpty)
                     ListTile(
                       title: const Text(
-                        'Transitive verb \n',
+                        'Transitive verb',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
@@ -342,12 +372,8 @@ class _WordDetailsState extends State<WordDetails> {
                           fontSize: 16.5,
                         ),
                       ),
-                      subtitle: Text(
-                        widget.t_verb!,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.5,
-                        ),
+                      subtitle: RichText(
+                        text: _buildStyledText(widget.t_verb!),
                       ),
                     )
                   else
@@ -361,10 +387,10 @@ class _WordDetailsState extends State<WordDetails> {
                           indent: 15.0,
                         )
                       : const SizedBox(),
-                  if (widget.i_verb!.isNotEmpty) // INTRANSITIVE VERB
+                  if (widget.i_verb!.isNotEmpty)
                     ListTile(
                       title: const Text(
-                        'Intransitive verb \n',
+                        'Intransitive verb',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
@@ -372,12 +398,8 @@ class _WordDetailsState extends State<WordDetails> {
                           fontSize: 16.5,
                         ),
                       ),
-                      subtitle: Text(
-                        widget.i_verb!,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.5,
-                        ),
+                      subtitle: RichText(
+                        text: _buildStyledText(widget.i_verb!),
                       ),
                     )
                   else
@@ -391,10 +413,10 @@ class _WordDetailsState extends State<WordDetails> {
                           indent: 15.0,
                         )
                       : const SizedBox(),
-                  if (widget.phrase!.isNotEmpty) // PHRASE
+                  if (widget.phrase!.isNotEmpty)
                     ListTile(
                       title: const Text(
-                        'Phrase \n',
+                        'Phrase',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
@@ -402,12 +424,8 @@ class _WordDetailsState extends State<WordDetails> {
                           fontSize: 16.5,
                         ),
                       ),
-                      subtitle: Text(
-                        widget.phrase!,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.5,
-                        ),
+                      subtitle: RichText(
+                        text: _buildStyledText(widget.phrase!),
                       ),
                     )
                   else
@@ -421,10 +439,10 @@ class _WordDetailsState extends State<WordDetails> {
                           indent: 15.0,
                         )
                       : const SizedBox(),
-                  if (widget.adjective!.isNotEmpty) // ADJECTIVE
+                  if (widget.adjective!.isNotEmpty)
                     ListTile(
                       title: const Text(
-                        'Adjective \n',
+                        'Adjective',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
@@ -432,12 +450,8 @@ class _WordDetailsState extends State<WordDetails> {
                           fontSize: 16.5,
                         ),
                       ),
-                      subtitle: Text(
-                        widget.adjective!,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.5,
-                        ),
+                      subtitle: RichText(
+                        text: _buildStyledText(widget.adjective!),
                       ),
                     )
                   else
@@ -451,10 +465,10 @@ class _WordDetailsState extends State<WordDetails> {
                           indent: 15.0,
                         )
                       : const SizedBox(),
-                  if (widget.adverb!.isNotEmpty) // ADVERB
+                  if (widget.adverb!.isNotEmpty)
                     ListTile(
                       title: const Text(
-                        'Adverb \n',
+                        'Adverb',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
@@ -462,12 +476,8 @@ class _WordDetailsState extends State<WordDetails> {
                           fontSize: 16.5,
                         ),
                       ),
-                      subtitle: Text(
-                        widget.adverb!,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.5,
-                        ),
+                      subtitle: RichText(
+                        text: _buildStyledText(widget.adverb!),
                       ),
                     )
                   else
@@ -481,10 +491,10 @@ class _WordDetailsState extends State<WordDetails> {
                           indent: 15.0,
                         )
                       : const SizedBox(),
-                  if (widget.conjunction!.isNotEmpty) // PREPOSITION
+                  if (widget.conjunction!.isNotEmpty)
                     ListTile(
                       title: const Text(
-                        'Conjunction \n',
+                        'Conjunction',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
@@ -492,12 +502,8 @@ class _WordDetailsState extends State<WordDetails> {
                           fontSize: 16.5,
                         ),
                       ),
-                      subtitle: Text(
-                        widget.conjunction!,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.5,
-                        ),
+                      subtitle: RichText(
+                        text: _buildStyledText(widget.conjunction!),
                       ),
                     )
                   else
@@ -511,10 +517,10 @@ class _WordDetailsState extends State<WordDetails> {
                           indent: 15.0,
                         )
                       : const SizedBox(),
-                  if (widget.preposition!.isNotEmpty) // PREPOSITION
+                  if (widget.preposition!.isNotEmpty)
                     ListTile(
                       title: const Text(
-                        'Preposition \n',
+                        'Preposition',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
@@ -522,12 +528,8 @@ class _WordDetailsState extends State<WordDetails> {
                           fontSize: 16.5,
                         ),
                       ),
-                      subtitle: Text(
-                        widget.preposition!,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.5,
-                        ),
+                      subtitle: RichText(
+                        text: _buildStyledText(widget.preposition!),
                       ),
                     )
                   else
@@ -541,10 +543,10 @@ class _WordDetailsState extends State<WordDetails> {
                           indent: 15.0,
                         )
                       : const SizedBox(),
-                  if (widget.synonym!.isNotEmpty) // SYNONYM
+                  if (widget.synonym!.isNotEmpty)
                     ListTile(
                       title: const Text(
-                        'Synonym \n',
+                        'Synonym',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
@@ -552,12 +554,8 @@ class _WordDetailsState extends State<WordDetails> {
                           fontSize: 16.5,
                         ),
                       ),
-                      subtitle: SelectableText(
-                        widget.synonym!,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.5,
-                        ),
+                      subtitle: RichText(
+                        text: _buildStyledText(widget.synonym!),
                       ),
                     )
                   else
@@ -571,10 +569,10 @@ class _WordDetailsState extends State<WordDetails> {
                           indent: 15.0,
                         )
                       : const SizedBox(),
-                  if (widget.antonym!.isNotEmpty) // ANTONYM
+                  if (widget.antonym!.isNotEmpty)
                     ListTile(
                       title: const Text(
-                        'Antonym \n',
+                        'Antonym',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
@@ -582,12 +580,8 @@ class _WordDetailsState extends State<WordDetails> {
                           fontSize: 16.5,
                         ),
                       ),
-                      subtitle: SelectableText(
-                        widget.antonym!,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.5,
-                        ),
+                      subtitle: RichText(
+                        text: _buildStyledText(widget.antonym!),
                       ),
                     )
                   else
