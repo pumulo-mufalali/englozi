@@ -135,7 +135,7 @@ class _DrawerPageState extends State<DrawerPage> {
               child: const ListTile(
                 iconColor: Colors.teal,
                 leading: Icon(Icons.favorite_outlined),
-                title: Text('Favourite'),
+                title: Text('Favourites'),
               ),
               onTap: () {
                 Navigator.push(

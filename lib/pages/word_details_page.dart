@@ -144,7 +144,7 @@ class _WordDetailsState extends State<WordDetails> {
             text: widget.word[0].toUpperCase(), // WORD
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 15.5,
+              fontSize: 18.5,
               fontStyle: FontStyle.normal,
               fontWeight: FontWeight.normal,
             ),
@@ -153,7 +153,7 @@ class _WordDetailsState extends State<WordDetails> {
                 text: widget.word.substring(1, widget.word.length),
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 15.5,
+                  fontSize: 18.5,
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.normal,
                 ),
@@ -188,19 +188,11 @@ class _WordDetailsState extends State<WordDetails> {
           scrollDirection: Axis.vertical,
           child: Column(
             children: [
-              const SizedBox(
-                height: 12.0,
-              ),
-              widget.description!.isNotEmpty
-                  ? const SizedBox(
-                      height: 10.0,
-                    )
-                  : const SizedBox(),
               widget.description!.isNotEmpty
                   ? const Divider(
                       height: 0.0,
                       color: Colors.grey,
-                      thickness: 2.5,
+                      thickness: 1.5,
                       endIndent: 15.0,
                       indent: 15.0,
                     )
@@ -216,7 +208,7 @@ class _WordDetailsState extends State<WordDetails> {
                                 text: TextSpan(
                                   text: widget.description![0].toUpperCase(),
                                   style: const TextStyle(
-                                      fontSize: 20.0,
+                                      fontSize: 16.5,
                                       color: Colors.grey,
                                       fontStyle: FontStyle.italic),
                                   children: [
@@ -224,7 +216,7 @@ class _WordDetailsState extends State<WordDetails> {
                                       text: widget.description!.substring(
                                           1, widget.description!.length),
                                       style: const TextStyle(
-                                          fontSize: 20.0,
+                                          fontSize: 16.5,
                                           color: Colors.grey,
                                           fontStyle: FontStyle.italic),
                                     ),
@@ -237,18 +229,13 @@ class _WordDetailsState extends State<WordDetails> {
                       ),
                     )
                   : const SizedBox(),
-              widget.description!.isNotEmpty
-                  ? const SizedBox(
-                      height: 5.0,
-                    )
-                  : const SizedBox(height: 10.0),
               Column(
                 children: [
                   widget.noun!.isNotEmpty
                       ? const Divider(
                           height: 0.0,
                           color: Colors.grey,
-                          thickness: 2.5,
+                          thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
                         )
@@ -258,16 +245,17 @@ class _WordDetailsState extends State<WordDetails> {
                       title: const Text(
                         'Noun \n',
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black,
                           fontStyle: FontStyle.italic,
-                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.5,
                         ),
                       ),
                       subtitle: Text(
                         widget.noun!,
                         style: const TextStyle(
                           color: Colors.black,
-                          fontSize: 20.0,
+                          fontSize: 16.5,
                         ),
                       ),
                     )
@@ -277,7 +265,7 @@ class _WordDetailsState extends State<WordDetails> {
                       ? const Divider(
                           height: 0.0,
                           color: Colors.grey,
-                          thickness: 2.5,
+                          thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
                         )
@@ -287,9 +275,10 @@ class _WordDetailsState extends State<WordDetails> {
                       title: const Text(
                         'Plural noun(s) \n',
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black,
                           fontStyle: FontStyle.italic,
-                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.5,
                         ),
                       ),
                       subtitle: Text(
@@ -297,7 +286,7 @@ class _WordDetailsState extends State<WordDetails> {
                         style: const TextStyle(
                           fontStyle: FontStyle.italic,
                           color: Colors.black,
-                          fontSize: 20.0,
+                          fontSize: 16.5,
                         ),
                       ),
                     )
@@ -307,7 +296,7 @@ class _WordDetailsState extends State<WordDetails> {
                       ? const Divider(
                           height: 0.0,
                           color: Colors.grey,
-                          thickness: 2.5,
+                          thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
                         )
@@ -317,16 +306,17 @@ class _WordDetailsState extends State<WordDetails> {
                       title: const Text(
                         'Verb \n',
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black,
                           fontStyle: FontStyle.italic,
-                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.5,
                         ),
                       ),
                       subtitle: Text(
                         widget.verb!,
                         style: const TextStyle(
                           color: Colors.black,
-                          fontSize: 20.0,
+                          fontSize: 16.5,
                         ),
                       ),
                     )
@@ -336,7 +326,7 @@ class _WordDetailsState extends State<WordDetails> {
                       ? const Divider(
                           height: 0.0,
                           color: Colors.grey,
-                          thickness: 2.5,
+                          thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
                         )
@@ -346,16 +336,17 @@ class _WordDetailsState extends State<WordDetails> {
                       title: const Text(
                         'Transitive verb \n',
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black,
                           fontStyle: FontStyle.italic,
-                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.5,
                         ),
                       ),
                       subtitle: Text(
                         widget.t_verb!,
                         style: const TextStyle(
                           color: Colors.black,
-                          fontSize: 20.0,
+                          fontSize: 16.5,
                         ),
                       ),
                     )
@@ -365,7 +356,7 @@ class _WordDetailsState extends State<WordDetails> {
                       ? const Divider(
                           height: 0.0,
                           color: Colors.grey,
-                          thickness: 2.5,
+                          thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
                         )
@@ -375,16 +366,17 @@ class _WordDetailsState extends State<WordDetails> {
                       title: const Text(
                         'Intransitive verb \n',
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black,
                           fontStyle: FontStyle.italic,
-                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.5,
                         ),
                       ),
                       subtitle: Text(
                         widget.i_verb!,
                         style: const TextStyle(
                           color: Colors.black,
-                          fontSize: 20.0,
+                          fontSize: 16.5,
                         ),
                       ),
                     )
@@ -394,7 +386,7 @@ class _WordDetailsState extends State<WordDetails> {
                       ? const Divider(
                           height: 0.0,
                           color: Colors.grey,
-                          thickness: 2.5,
+                          thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
                         )
@@ -404,16 +396,17 @@ class _WordDetailsState extends State<WordDetails> {
                       title: const Text(
                         'Phrase \n',
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black,
                           fontStyle: FontStyle.italic,
-                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.5,
                         ),
                       ),
                       subtitle: Text(
                         widget.phrase!,
                         style: const TextStyle(
                           color: Colors.black,
-                          fontSize: 20.0,
+                          fontSize: 16.5,
                         ),
                       ),
                     )
@@ -423,7 +416,7 @@ class _WordDetailsState extends State<WordDetails> {
                       ? const Divider(
                           height: 0.0,
                           color: Colors.grey,
-                          thickness: 2.5,
+                          thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
                         )
@@ -433,16 +426,17 @@ class _WordDetailsState extends State<WordDetails> {
                       title: const Text(
                         'Adjective \n',
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black,
                           fontStyle: FontStyle.italic,
-                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.5,
                         ),
                       ),
                       subtitle: Text(
                         widget.adjective!,
                         style: const TextStyle(
                           color: Colors.black,
-                          fontSize: 20.0,
+                          fontSize: 16.5,
                         ),
                       ),
                     )
@@ -452,7 +446,7 @@ class _WordDetailsState extends State<WordDetails> {
                       ? const Divider(
                           height: 0.0,
                           color: Colors.grey,
-                          thickness: 2.5,
+                          thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
                         )
@@ -462,16 +456,17 @@ class _WordDetailsState extends State<WordDetails> {
                       title: const Text(
                         'Adverb \n',
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black,
                           fontStyle: FontStyle.italic,
-                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.5,
                         ),
                       ),
                       subtitle: Text(
                         widget.adverb!,
                         style: const TextStyle(
                           color: Colors.black,
-                          fontSize: 20.0,
+                          fontSize: 16.5,
                         ),
                       ),
                     )
@@ -481,7 +476,7 @@ class _WordDetailsState extends State<WordDetails> {
                       ? const Divider(
                           height: 0.0,
                           color: Colors.grey,
-                          thickness: 2.5,
+                          thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
                         )
@@ -491,16 +486,17 @@ class _WordDetailsState extends State<WordDetails> {
                       title: const Text(
                         'Conjunction \n',
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black,
                           fontStyle: FontStyle.italic,
-                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.5,
                         ),
                       ),
                       subtitle: Text(
                         widget.conjunction!,
                         style: const TextStyle(
                           color: Colors.black,
-                          fontSize: 20.0,
+                          fontSize: 16.5,
                         ),
                       ),
                     )
@@ -510,7 +506,7 @@ class _WordDetailsState extends State<WordDetails> {
                       ? const Divider(
                           height: 0.0,
                           color: Colors.grey,
-                          thickness: 2.5,
+                          thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
                         )
@@ -520,16 +516,17 @@ class _WordDetailsState extends State<WordDetails> {
                       title: const Text(
                         'Preposition \n',
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black,
                           fontStyle: FontStyle.italic,
-                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.5,
                         ),
                       ),
                       subtitle: Text(
                         widget.preposition!,
                         style: const TextStyle(
                           color: Colors.black,
-                          fontSize: 20.0,
+                          fontSize: 16.5,
                         ),
                       ),
                     )
@@ -539,7 +536,7 @@ class _WordDetailsState extends State<WordDetails> {
                       ? const Divider(
                           height: 0.0,
                           color: Colors.grey,
-                          thickness: 2.5,
+                          thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
                         )
@@ -549,16 +546,17 @@ class _WordDetailsState extends State<WordDetails> {
                       title: const Text(
                         'Synonym \n',
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black,
                           fontStyle: FontStyle.italic,
-                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.5,
                         ),
                       ),
                       subtitle: SelectableText(
                         widget.synonym!,
                         style: const TextStyle(
                           color: Colors.black,
-                          fontSize: 20.0,
+                          fontSize: 16.5,
                         ),
                       ),
                     )
@@ -568,7 +566,7 @@ class _WordDetailsState extends State<WordDetails> {
                       ? const Divider(
                           height: 0.0,
                           color: Colors.grey,
-                          thickness: 2.5,
+                          thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
                         )
@@ -578,16 +576,17 @@ class _WordDetailsState extends State<WordDetails> {
                       title: const Text(
                         'Antonym \n',
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black,
                           fontStyle: FontStyle.italic,
-                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.5,
                         ),
                       ),
                       subtitle: SelectableText(
                         widget.antonym!,
                         style: const TextStyle(
                           color: Colors.black,
-                          fontSize: 20.0,
+                          fontSize: 16.5,
                         ),
                       ),
                     )

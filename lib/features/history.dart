@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../databases/dictionary_db.dart';
 import '../databases/history_db.dart';
-import '../model/dic_model.dart';
 import '../model/his_model.dart';
 import '../pages/word_details_page.dart';
 

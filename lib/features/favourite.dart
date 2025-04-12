@@ -129,11 +129,13 @@ class _FavouritePageState extends State<FavouritePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.teal,
+        foregroundColor: Colors.white,
         title: const Text('Favourites'),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.delete_forever),
+            icon: const Icon(Icons.delete),
             tooltip: 'Clear All',
             onPressed: _clearAllFavourites,
           ),
@@ -156,16 +158,16 @@ class _FavouritePageState extends State<FavouritePage> {
               return await showDialog(
                 context: context,
                 builder: (ctx) => AlertDialog(
-                  title: const Text("Confirm"),
+                  title: const Text("Confirm", style: TextStyle(color: Colors.red)),
                   content: const Text("Remove from favourites?"),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(ctx, false),
-                      child: const Text("Cancel"),
+                      child: const Text("Cancel", style: TextStyle(color: Colors.black),),
                     ),
                     TextButton(
                       onPressed: () => Navigator.pop(ctx, true),
-                      child: const Text("Remove"),
+                      child: const Text("Remove", style: TextStyle(color: Colors.red)),
                     ),
                   ],
                 ),
