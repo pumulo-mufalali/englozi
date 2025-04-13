@@ -60,7 +60,7 @@ class _WordDetailsState extends State<WordDetails> {
     getData();
   }
 
-  Widget _buildWordList(String? content, String title, BuildContext context) {
+  Widget _buildClickableWordList(String? content, String title, BuildContext context) {
     if (content == null || content.isEmpty) return const SizedBox();
 
     final words = content.split(',').map((word) => word.trim()).toList();
@@ -124,7 +124,7 @@ class _WordDetailsState extends State<WordDetails> {
   }
 
   void _navigateToWord(String word, BuildContext context) async {
-    final cleanWord = word.replaceAll(RegExp(r'[^\w]'), '');
+    final cleanWord = word.replaceAll(RegExp(r'[^\w-]'), '');
 
     if (cleanWord.isEmpty) return;
 
@@ -661,7 +661,7 @@ class _WordDetailsState extends State<WordDetails> {
                         )
                       : const SizedBox(),
                   if (widget.synonym?.isNotEmpty ?? false)
-                    _buildWordList(widget.synonym, "Synonym", context),
+                    _buildClickableWordList(widget.synonym, "Synonym", context),
                   widget.antonym!.isNotEmpty
                       ? const Divider(
                           height: 0.0,
@@ -672,7 +672,7 @@ class _WordDetailsState extends State<WordDetails> {
                         )
                       : const SizedBox(),
                   if (widget.antonym?.isNotEmpty ?? false)
-                    _buildWordList(widget.antonym, "Antonym", context),
+                    _buildClickableWordList(widget.antonym, "Antonym", context),
                 ],
               ),
             ],

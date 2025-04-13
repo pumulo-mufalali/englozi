@@ -1,3 +1,4 @@
+import 'package:englozi/pages/splash_page.dart';
 import 'package:englozi/welcome_page.dart';
 import 'package:flutter/material.dart';
 
@@ -13,10 +14,41 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: 'Englozi',
       theme: ThemeData(
-          primarySwatch: Colors.blueGrey
+          primarySwatch: Colors.teal
       ),
-      home: const WelcomePage(),
+      home: const SplashScreenPage(), // Show splash screen first
+      routes: {
+        '/home': (context) => const WelcomePage(), // Your main app page
+      },
     );
+  }
+}
+
+class SplashScreenPage extends StatefulWidget {
+  const SplashScreenPage({Key? key}) : super(key: key);
+
+  @override
+  State<SplashScreenPage> createState() => _SplashScreenPageState();
+}
+
+class _SplashScreenPageState extends State<SplashScreenPage> {
+  @override
+  void initState() {
+    super.initState();
+    _navigateToHome();
+  }
+
+  _navigateToHome() async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, '/home');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const SplashScreen();
   }
 }
