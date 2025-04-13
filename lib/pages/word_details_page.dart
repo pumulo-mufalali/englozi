@@ -3,7 +3,6 @@ import 'package:englozi/databases/favourite_db.dart';
 import 'package:englozi/features/drawer.dart';
 import 'package:englozi/model/dic_model.dart';
 import 'package:englozi/model/fav_model.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -61,45 +60,51 @@ class _WordDetailsState extends State<WordDetails> {
     getData();
   }
 
-  Widget _buildHorizontalWordList(String? content, String title, BuildContext context) {
+  Widget _buildWordList(String? content, String title, BuildContext context) {
     if (content == null || content.isEmpty) return const SizedBox();
 
     final words = content.split(',').map((word) => word.trim()).toList();
 
-    return FutureBuilder<Map<String, bool>>(
-      future: dbHelper.checkWordsExist(words),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return _buildSectionTitle(title);
+    return Center(
+      child: FutureBuilder<Map<String, bool>>(
+        future: dbHelper.checkWordsExist(words),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return _buildSectionTitle(title);
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSectionTitle(title),
-            SizedBox(
-              height: 24,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: words.length,
-                separatorBuilder: (_, __) => const Text(", "),
-                itemBuilder: (context, index) {
-                  final word = words[index];
-                  final exists = snapshot.data![word] ?? false;
-                  return GestureDetector(
-                    onTap: exists ? () => _navigateToWord(word, context) : null,
-                    child: Text(
-                      word,
-                      style: TextStyle(
-                        color: exists ? Colors.blue : Colors.black,
-                        decoration: exists ? TextDecoration.none : null,
-                      ),
-                    ),
-                  );
-                },
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionTitle(title),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                child: SizedBox(
+                  height: 24,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: words.length,
+                    separatorBuilder: (_, __) => const Text(", "),
+                    itemBuilder: (context, index) {
+                      final word = words[index];
+                      final exists = snapshot.data![word] ?? false;
+                      return GestureDetector(
+                        onTap: exists ? () => _navigateToWord(word, context) : null,
+                        child: Text(
+                          word,
+                          style: TextStyle(
+                            color: exists ? Colors.blue : Colors.black,
+                            decoration: exists ? TextDecoration.none : null,
+                            fontSize: 16.5,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
-            ),
-          ],
-        );
-      },
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -656,7 +661,7 @@ class _WordDetailsState extends State<WordDetails> {
                         )
                       : const SizedBox(),
                   if (widget.synonym?.isNotEmpty ?? false)
-                    _buildHorizontalWordList(widget.synonym, "Synonym", context),
+                    _buildWordList(widget.synonym, "Synonym", context),
                   widget.antonym!.isNotEmpty
                       ? const Divider(
                           height: 0.0,
@@ -667,7 +672,7 @@ class _WordDetailsState extends State<WordDetails> {
                         )
                       : const SizedBox(),
                   if (widget.antonym?.isNotEmpty ?? false)
-                    _buildHorizontalWordList(widget.antonym, "Antonym", context),
+                    _buildWordList(widget.antonym, "Antonym", context),
                 ],
               ),
             ],
