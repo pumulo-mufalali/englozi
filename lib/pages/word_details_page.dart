@@ -3,6 +3,7 @@ import 'package:englozi/databases/favourite_db.dart';
 import 'package:englozi/features/drawer.dart';
 import 'package:englozi/model/dic_model.dart';
 import 'package:englozi/model/fav_model.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -60,6 +61,139 @@ class _WordDetailsState extends State<WordDetails> {
     getData();
   }
 
+  Widget _buildClickableListSection(String? content, String title) {
+    if (content == null || content.isEmpty) return const SizedBox();
+
+    return FutureBuilder<Map<String, bool>>(
+      future: dbHelper
+          .checkWordsExist(content.split(',').map((e) => e.trim()).toList()),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return _buildSectionTitle(title);
+        }
+        final wordExistsMap = snapshot.data!;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSectionTitle(title),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: RichText(
+                text: TextSpan(
+                  style: const TextStyle(fontSize: 14.5, color: Colors.black),
+                  children: _buildCommaSeparatedSpans(
+                      content, wordExistsMap, context),
+                ),
+              ),
+            ),
+            const Divider(
+              height: 0.0,
+              color: Colors.red,
+              thickness: 1.5,
+              endIndent: 15,
+              indent: 15,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  List<InlineSpan> _buildCommaSeparatedSpans(
+      String text, Map<String, bool> wordExistsMap, BuildContext context) {
+    final spans = <InlineSpan>[];
+    final items =
+        text.split(RegExp(r'(?<=\w)(?=,)|\s*,\s*'));
+
+    for (int i = 0; i < items.length; i++) {
+      final item = items[i];
+      if (item.isEmpty) continue;
+
+      if (item == ',') {
+        spans.add(const TextSpan(text: ', '));
+      } else {
+        final exists = wordExistsMap[item] ?? false;
+        spans.add(
+          TextSpan(
+            text: item,
+            style: TextStyle(
+              color: exists ? Colors.blue : Colors.black,
+              decoration: exists ? TextDecoration.none : null,
+            ),
+            recognizer: exists
+                ? (TapGestureRecognizer()
+                  ..onTap = () => _navigateToWord(
+                        item,
+                        context,
+                      ))
+                : null,
+          ),
+        );
+      }
+    }
+
+    return spans;
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, top: 8, bottom: 4),
+      child: Text(
+        title,
+        style: const TextStyle(
+          color: Colors.black,
+          fontStyle: FontStyle.italic,
+          fontWeight: FontWeight.bold,
+          fontSize: 16.5,
+        ),
+      ),
+    );
+  }
+
+  void _navigateToWord(String word, BuildContext context) async {
+    final cleanWord = word.replaceAll(RegExp(r'[^\w]'), '');
+
+    if (cleanWord.isEmpty) return;
+
+    try {
+      final results = await dbHelper.searchWords(cleanWord);
+      if (results.isNotEmpty && mounted) {
+        final result = results.first;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WordDetails(
+              word: result.word,
+              noun: result.noun,
+              plural: result.plural,
+              description: result.description,
+              phrase: result.phrase,
+              verb: result.verb,
+              t_verb: result.t_verb,
+              i_verb: result.i_verb,
+              adjective: result.adjective,
+              adverb: result.adverb,
+              preposition: result.preposition,
+              synonym: result.synonym,
+              antonym: result.antonym,
+              conjunction: result.conjunction,
+            ),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('"$cleanWord" not found in dictionary')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error looking up word')),
+        );
+      }
+    }
+  }
+
   TextSpan _buildStyledText(String text) {
     final regex = RegExp(r'(\(.*?\))');
     final matches = regex.allMatches(text);
@@ -71,31 +205,40 @@ class _WordDetailsState extends State<WordDetails> {
         spans.add(
           TextSpan(
             text: text.substring(lastEnd, match.start),
-            style: const TextStyle(color: Colors.black),
+            style: const TextStyle(
+              color: Colors.black,
+            ),
           ),
         );
       }
 
-      spans.add(
+      final fullMatch = match.group(0)!;
+      spans.addAll([
+        const TextSpan(
+          text: '(',
+          style: TextStyle(color: Colors.white),
+        ),
         TextSpan(
-          text: match.group(0),
+          text: fullMatch.substring(1, fullMatch.length - 1),
           style: const TextStyle(
             color: Colors.blue,
-            fontStyle: FontStyle.italic,
+            fontStyle: FontStyle.normal,
           ),
         ),
-      );
+        const TextSpan(
+          text: ')',
+          style: TextStyle(color: Colors.white),
+        ),
+      ]);
 
       lastEnd = match.end;
     }
 
     if (lastEnd < text.length) {
-      spans.add(
-        TextSpan(
-          text: text.substring(lastEnd),
-          style: const TextStyle(color: Colors.black),
-        ),
-      );
+      spans.add(TextSpan(
+        text: text.substring(lastEnd),
+        style: const TextStyle(color: Colors.black),
+      ));
     }
 
     return TextSpan(children: spans);
@@ -226,6 +369,7 @@ class _WordDetailsState extends State<WordDetails> {
         elevation: 0.0,
       ),
       body: Scaffold(
+        backgroundColor: Colors.white,
         drawer: const DrawerPage(),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -312,7 +456,7 @@ class _WordDetailsState extends State<WordDetails> {
                   if (widget.plural!.isNotEmpty)
                     ListTile(
                       title: const Text(
-                        'Plural noun',
+                        'Plural',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
@@ -543,23 +687,8 @@ class _WordDetailsState extends State<WordDetails> {
                           indent: 15.0,
                         )
                       : const SizedBox(),
-                  if (widget.synonym!.isNotEmpty)
-                    ListTile(
-                      title: const Text(
-                        'Synonym',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.5,
-                        ),
-                      ),
-                      subtitle: RichText(
-                        text: _buildStyledText(widget.synonym!),
-                      ),
-                    )
-                  else
-                    const SizedBox(),
+                  if (widget.synonym?.isNotEmpty ?? false)
+                    _buildClickableListSection(widget.synonym, "Synonym"),
                   widget.antonym!.isNotEmpty
                       ? const Divider(
                           height: 0.0,
@@ -569,23 +698,8 @@ class _WordDetailsState extends State<WordDetails> {
                           indent: 15.0,
                         )
                       : const SizedBox(),
-                  if (widget.antonym!.isNotEmpty)
-                    ListTile(
-                      title: const Text(
-                        'Antonym',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.5,
-                        ),
-                      ),
-                      subtitle: RichText(
-                        text: _buildStyledText(widget.antonym!),
-                      ),
-                    )
-                  else
-                    const SizedBox(),
+                  if (widget.antonym?.isNotEmpty ?? false)
+                    _buildClickableListSection(widget.antonym, "Antonym"),
                 ],
               ),
             ],

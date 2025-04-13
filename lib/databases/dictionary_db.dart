@@ -60,8 +60,17 @@ class DatabaseHelper {
     return allRows.map((e) => DictionaryModel.fromMap(e)).toList();
   }
 
-}
+  Future<Map<String, bool>> checkWordsExist(List<String> words) async {
+    final db = await database;
+    final lowercaseWords = words.map((w) => w.toLowerCase()).toList();
 
-// WHERE word LIKE 'keyword%' -> finds word that starts with keyword
-// WHERE word LIKE '%keyword' -> finds word that ends with keyword
-// WHERE word LIKE '%keyword%' -> finds word that have keyword at any position
+    final results = await db.rawQuery(
+      'SELECT LOWER(word) as word FROM $_tableName WHERE LOWER(word) IN (${List.filled(words.length, '?').join(',')})',
+      lowercaseWords,
+    );
+
+    final existingWords = results.map((e) => e['word'] as String).toSet();
+    return {for (var word in words) word: existingWords.contains(word.toLowerCase())};
+  }
+
+}

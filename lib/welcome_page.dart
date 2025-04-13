@@ -14,7 +14,7 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> {
   int _focuses = 1;
-  List<String> cards = ['PHRASES', 'DICTIONARY', 'LOZI NAMES'];
+  List<String> cards = ['PHRASES', 'TRANSLATOR', 'NAMES'];
 
   void _onItemFocus(int index) {
     setState(() {
