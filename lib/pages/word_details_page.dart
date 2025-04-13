@@ -61,78 +61,46 @@ class _WordDetailsState extends State<WordDetails> {
     getData();
   }
 
-  Widget _buildClickableListSection(String? content, String title) {
+  Widget _buildHorizontalWordList(String? content, String title, BuildContext context) {
     if (content == null || content.isEmpty) return const SizedBox();
 
+    final words = content.split(',').map((word) => word.trim()).toList();
+
     return FutureBuilder<Map<String, bool>>(
-      future: dbHelper
-          .checkWordsExist(content.split(',').map((e) => e.trim()).toList()),
+      future: dbHelper.checkWordsExist(words),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return _buildSectionTitle(title);
-        }
-        final wordExistsMap = snapshot.data!;
+        if (!snapshot.hasData) return _buildSectionTitle(title);
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionTitle(title),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: RichText(
-                text: TextSpan(
-                  style: const TextStyle(fontSize: 14.5, color: Colors.black),
-                  children: _buildCommaSeparatedSpans(
-                      content, wordExistsMap, context),
-                ),
+            SizedBox(
+              height: 24,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: words.length,
+                separatorBuilder: (_, __) => const Text(", "),
+                itemBuilder: (context, index) {
+                  final word = words[index];
+                  final exists = snapshot.data![word] ?? false;
+                  return GestureDetector(
+                    onTap: exists ? () => _navigateToWord(word, context) : null,
+                    child: Text(
+                      word,
+                      style: TextStyle(
+                        color: exists ? Colors.blue : Colors.black,
+                        decoration: exists ? TextDecoration.none : null,
+                      ),
+                    ),
+                  );
+                },
               ),
-            ),
-            const Divider(
-              height: 0.0,
-              color: Colors.red,
-              thickness: 1.5,
-              endIndent: 15,
-              indent: 15,
             ),
           ],
         );
       },
     );
-  }
-
-  List<InlineSpan> _buildCommaSeparatedSpans(
-      String text, Map<String, bool> wordExistsMap, BuildContext context) {
-    final spans = <InlineSpan>[];
-    final items =
-        text.split(RegExp(r'(?<=\w)(?=,)|\s*,\s*'));
-
-    for (int i = 0; i < items.length; i++) {
-      final item = items[i];
-      if (item.isEmpty) continue;
-
-      if (item == ',') {
-        spans.add(const TextSpan(text: ', '));
-      } else {
-        final exists = wordExistsMap[item] ?? false;
-        spans.add(
-          TextSpan(
-            text: item,
-            style: TextStyle(
-              color: exists ? Colors.blue : Colors.black,
-              decoration: exists ? TextDecoration.none : null,
-            ),
-            recognizer: exists
-                ? (TapGestureRecognizer()
-                  ..onTap = () => _navigateToWord(
-                        item,
-                        context,
-                      ))
-                : null,
-          ),
-        );
-      }
-    }
-
-    return spans;
   }
 
   Widget _buildSectionTitle(String title) {
@@ -688,7 +656,7 @@ class _WordDetailsState extends State<WordDetails> {
                         )
                       : const SizedBox(),
                   if (widget.synonym?.isNotEmpty ?? false)
-                    _buildClickableListSection(widget.synonym, "Synonym"),
+                    _buildHorizontalWordList(widget.synonym, "Synonym", context),
                   widget.antonym!.isNotEmpty
                       ? const Divider(
                           height: 0.0,
@@ -699,7 +667,7 @@ class _WordDetailsState extends State<WordDetails> {
                         )
                       : const SizedBox(),
                   if (widget.antonym?.isNotEmpty ?? false)
-                    _buildClickableListSection(widget.antonym, "Antonym"),
+                    _buildHorizontalWordList(widget.antonym, "Antonym", context),
                 ],
               ),
             ],
