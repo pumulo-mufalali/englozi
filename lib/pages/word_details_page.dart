@@ -60,7 +60,8 @@ class _WordDetailsState extends State<WordDetails> {
     getData();
   }
 
-  Widget _buildClickableWordList(String? content, String title, BuildContext context) {
+  Widget _buildClickableWordList(
+      String? content, String title, BuildContext context) {
     if (content == null || content.isEmpty) return const SizedBox();
 
     final words = content.split(',').map((word) => word.trim()).toList();
@@ -87,13 +88,15 @@ class _WordDetailsState extends State<WordDetails> {
                       final word = words[index];
                       final exists = snapshot.data![word] ?? false;
                       return GestureDetector(
-                        onTap: exists ? () => _navigateToWord(word, context) : null,
+                        onTap: exists
+                            ? () => _navigateToWord(word, context)
+                            : null,
                         child: Text(
                           word,
                           style: TextStyle(
                             color: exists ? Colors.blue : Colors.black,
                             decoration: exists ? TextDecoration.none : null,
-                            fontSize: 16.5,
+                            fontSize: 15.5,
                           ),
                         ),
                       );
@@ -124,7 +127,7 @@ class _WordDetailsState extends State<WordDetails> {
   }
 
   void _navigateToWord(String word, BuildContext context) async {
-    final cleanWord = word.replaceAll(RegExp(r'[^\w-]'), '');
+    final cleanWord = word.replaceAll(RegExp(r'[^\w- ]'), '');
 
     if (cleanWord.isEmpty) return;
 
@@ -180,6 +183,7 @@ class _WordDetailsState extends State<WordDetails> {
             text: text.substring(lastEnd, match.start),
             style: const TextStyle(
               color: Colors.black,
+              fontSize: 15.5,
             ),
           ),
         );
@@ -196,6 +200,7 @@ class _WordDetailsState extends State<WordDetails> {
           style: const TextStyle(
             color: Colors.blue,
             fontStyle: FontStyle.normal,
+            fontSize: 15.5,
           ),
         ),
         const TextSpan(
@@ -324,7 +329,7 @@ class _WordDetailsState extends State<WordDetails> {
             icon: const Icon(Icons.volume_up),
           ),
           Container(
-            height: 20, // Matches IconButton height
+            height: 20,
             width: 2,
             color: Colors.white.withOpacity(0.3),
             margin: const EdgeInsets.symmetric(horizontal: 12),
@@ -334,7 +339,6 @@ class _WordDetailsState extends State<WordDetails> {
               _toggleFavourite(),
             },
             icon: Icon(_isFavourited ? Icons.favorite : Icons.favorite_border),
-            color: Colors.redAccent,
           ),
         ],
         centerTitle: false,
@@ -363,12 +367,12 @@ class _WordDetailsState extends State<WordDetails> {
                   ? Padding(
                       padding: const EdgeInsets.only(left: 0.0),
                       child: ListTile(
-                        title: widget.description!.isNotEmpty //DESCRIPTION
+                        title: widget.description!.isNotEmpty
                             ? RichText(
                                 text: TextSpan(
                                   text: widget.description![0].toUpperCase(),
                                   style: const TextStyle(
-                                      fontSize: 16.5,
+                                      fontSize: 15.5,
                                       color: Colors.grey,
                                       fontStyle: FontStyle.italic),
                                   children: [
@@ -376,7 +380,7 @@ class _WordDetailsState extends State<WordDetails> {
                                       text: widget.description!.substring(
                                           1, widget.description!.length),
                                       style: const TextStyle(
-                                          fontSize: 16.5,
+                                          fontSize: 15.5,
                                           color: Colors.grey,
                                           fontStyle: FontStyle.italic),
                                     ),
