@@ -50,8 +50,8 @@ class _PhrasesPageState extends State<PhrasesPage> {
   final FlutterTts flutterTts = FlutterTts();
 
   void speak(String text) async {
-    await flutterTts.setPitch(0.1);
     await flutterTts.setVolume(1.0);
+    await flutterTts.setLanguage("sw");
     await flutterTts.setSpeechRate(0.4);
     await flutterTts.speak(text);
   }
@@ -113,23 +113,11 @@ class _PhrasesPageState extends State<PhrasesPage> {
                               ),
                               children: [
                                 TextSpan(
-                                  text: _foundWords[index]
-                                      .phrEnglish[0]
-                                      .toUpperCase(),
+                                  text: _foundWords[index].phrEnglish[0].toUpperCase() +
+                                      _foundWords[index].phrEnglish.substring(1),
                                   style: const TextStyle(
                                     color: Colors.green,
                                     fontSize: 15.5,
-                                    fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: _foundWords[index].phrEnglish.substring(
-                                      1, _foundWords[index].phrEnglish.length),
-                                  style: const TextStyle(
-                                    color: Colors.green,
-                                    fontSize: 15.5,
-                                    fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
@@ -147,26 +135,14 @@ class _PhrasesPageState extends State<PhrasesPage> {
                               ),
                               children: [
                                 TextSpan(
-                                  text: _foundWords[index]
-                                      .phrSilozi[0]
-                                      .toUpperCase(),
+                                  text: _foundWords[index].phrSilozi[0].toUpperCase() +
+                                      _foundWords[index].phrSilozi.substring(1),
                                   style: const TextStyle(
                                     color: Colors.blueGrey,
                                     fontSize: 15.5,
-                                    fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
-                                TextSpan(
-                                  text: _foundWords[index].phrSilozi.substring(
-                                      1, _foundWords[index].phrSilozi.length),
-                                  style: const TextStyle(
-                                    color: Colors.blueGrey,
-                                    fontSize: 15.5,
-                                    fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                )
                               ],
                             ),
                           ),
@@ -176,7 +152,7 @@ class _PhrasesPageState extends State<PhrasesPage> {
                               color: Colors.grey,
                             ),
                             onTap: () {
-                              speak(_foundWords[index].phrEnglish);
+                              speak(_foundWords[index].phrSilozi);
                             },
                           ),
                         ),
