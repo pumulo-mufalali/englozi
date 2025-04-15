@@ -64,10 +64,9 @@ class _PhrasesPageState extends State<PhrasesPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
         title: const Text('Phrases'),
-        centerTitle: true,
       ),
       body: Scaffold(
         drawer: const DrawerPage(),
@@ -89,8 +88,8 @@ class _PhrasesPageState extends State<PhrasesPage> {
                     borderRadius: BorderRadius.circular(12.0),
                   ),
                   prefixIcon: const Icon(
-                    Icons.zoom_in_map,
-                    color: Colors.green,
+                    Icons.help_outline,
+                    color: Colors.grey,
                   ),
                 ),
               ),
@@ -108,7 +107,7 @@ class _PhrasesPageState extends State<PhrasesPage> {
                               text: 'Eng: ',
                               style: const TextStyle(
                                 color: Colors.black,
-                                fontSize: 18.5,
+                                fontSize: 16.5,
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -142,7 +141,7 @@ class _PhrasesPageState extends State<PhrasesPage> {
                               text: 'Lozi: ',
                               style: const TextStyle(
                                 color: Colors.black,
-                                fontSize: 18.5,
+                                fontSize: 16.5,
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.bold,
                               ),

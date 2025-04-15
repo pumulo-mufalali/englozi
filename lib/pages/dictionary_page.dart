@@ -68,7 +68,6 @@ class _DictionaryPageState extends State<DictionaryPage> {
           icon: const Icon(Icons.arrow_back),
         ),
         title: const Text('Translator'),
-        centerTitle: true,
         elevation: 0,
         // icon: Icon(Icons.list),
       ),

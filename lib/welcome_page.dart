@@ -42,7 +42,7 @@ class _WelcomePageState extends State<WelcomePage> {
               child: ClipRRect(
                 child: SizedBox(
                   width: 250,
-                  height: 450,
+                  height: 400,
                   child: InkWell(
                     child: Center(
                       child: Text(

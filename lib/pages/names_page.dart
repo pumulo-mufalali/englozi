@@ -61,9 +61,8 @@ class _NamesPageState extends State<NamesPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         foregroundColor: Colors.white,
-        centerTitle: true,
         elevation: 0.0,
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.teal,
         title: const Text('Lozi names'),
       ),
       body: Scaffold(
@@ -75,19 +74,12 @@ class _NamesPageState extends State<NamesPage> {
               TextField(
                 onChanged: (value) => _filters(value),
                 cursorColor: Colors.black87,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Type a name here...',
-                  labelStyle: const TextStyle(
+                  labelStyle: TextStyle(
                     color: Colors.black45,
                     fontWeight: FontWeight.normal,
                     fontSize: 25,
-                  ),
-                  icon: IconButton(
-                    icon: const Icon(
-                      Icons.help_outline,
-                      color: Colors.blue,
-                    ),
-                    onPressed: () {},
                   ),
                 ),
               ),
@@ -98,86 +90,91 @@ class _NamesPageState extends State<NamesPage> {
                     return Padding(
                       padding: const EdgeInsets.only(top: 12.0),
                       child: Card(
-                        color: Colors.black54,
-                        elevation: 0.0,
+                        color: Colors.white,
+                        elevation: 3.5,
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Center(
-                                  child: Text(
-                                    _foundWords[index].name.toUpperCase(),
-                                    style: const TextStyle(
-                                      fontSize: 25.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.lightBlue
-                                    ),
-                                  ),
+                                child: Text(
+                                  _foundWords[index].name.replaceFirst(_foundWords[index].name[0], _foundWords[index].name[0].toUpperCase()),
+                                  style: const TextStyle(
+                                      fontSize: 20.5,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.blue),
+                                ),
                               ),
-                              _foundWords[index].engMean!.isNotEmpty
+                              // _foundWords[index].engMean!.isNotEmpty
+                              //     ? const Text(
+                              //         'Meaning in english:',
+                              //         style: TextStyle(
+                              //           fontSize: 17.0,
+                              //           color: Colors.blue,
+                              //           fontWeight: FontWeight.normal,
+                              //         ),
+                              //       )
+                              //     : const SizedBox(
+                              //         height: 0.0,
+                              //       ),
+                              // _foundWords[index].engMean!.isNotEmpty
+                              //     ? Text(
+                              //         _foundWords[index].engMean!,
+                              //         style: const TextStyle(
+                              //           color: Colors.black,
+                              //           fontSize: 20.0,
+                              //           fontWeight: FontWeight.normal,
+                              //         ),
+                              //       )
+                              //     : const SizedBox(),
+                              // _foundWords[index].lozMean!.isNotEmpty
+                              //     ? const SizedBox(
+                              //         height: 10.0,
+                              //       )
+                              //     : const SizedBox(),
+                              _foundWords[index].lozMean!.isNotEmpty
                                   ? const Text(
-                                'Meaning in english:',
-                                style: TextStyle(
-                                  fontSize: 17.0,
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                                  : const SizedBox(
-                                height: 0.0,
-                              ),
-                              _foundWords[index].engMean!.isNotEmpty
-                                  ? Text(
-                                _foundWords[index].engMean!,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              )
-                                  : const SizedBox(),
-                              _foundWords[index].lozMean!.isNotEmpty
-                                  ? const SizedBox(
-                                height: 10.0,
-                              )
-                                  : const SizedBox(),
-                              _foundWords[index].lozMean!.isNotEmpty
-                                  ? const Text(
-                                'Meaning in lozi:',
-                                style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 17.0),
-                              )
+                                      'Meaning:',
+                                      style: TextStyle(
+                                          color: Colors.blue,
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 16.5),
+                                    )
                                   : const SizedBox(),
                               _foundWords[index].lozMean!.isNotEmpty
                                   ? Text(
-                                _foundWords[index].lozMean!,
-                                style: const TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              )
+                                      _foundWords[index].lozMean!,
+                                      style: const TextStyle(
+                                        fontSize: 15.5,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    )
                                   : const SizedBox(),
                               _foundWords[index].origin!.isNotEmpty
                                   ? const SizedBox(
-                                height: 10.0,
-                              )
+                                      height: 10.0,
+                                    )
                                   : const SizedBox(),
                               _foundWords[index].origin!.isNotEmpty
                                   ? const Text(
-                                'Origin:',
-                                style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 17.0),
-                              )
+                                      'Origin:',
+                                      style: TextStyle(
+                                          color: Colors.blue,
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 16.5),
+                                    )
                                   : const SizedBox(),
                               _foundWords[index].origin!.isNotEmpty
                                   ? Text(
-                                _foundWords[index].origin!,
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.normal,
-                                    fontStyle: FontStyle.normal),
-                              )
+                                      _foundWords[index].origin!,
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15.5,
+                                          fontWeight: FontWeight.normal,
+                                          fontStyle: FontStyle.normal),
+                                    )
                                   : const SizedBox(),
                             ],
                           ),

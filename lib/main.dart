@@ -18,9 +18,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.teal
       ),
-      home: const SplashScreenPage(), // Show splash screen first
+      home: const SplashScreenPage(),
       routes: {
-        '/home': (context) => const WelcomePage(), // Your main app page
+        '/home': (context) => const WelcomePage(),
       },
     );
   }
