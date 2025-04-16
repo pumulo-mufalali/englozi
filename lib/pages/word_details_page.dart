@@ -271,11 +271,11 @@ class _WordDetailsState extends State<WordDetails> {
     });
   }
 
-  void speak(String text) async {
+  speak(String text) async {
     await flutterTts.setPitch(0.1);
     await flutterTts.setVolume(1.0);
     await flutterTts.setSpeechRate(0.4);
-    await flutterTts.speak(text);
+    return await flutterTts.speak(text);
   }
 
   @override
@@ -301,27 +301,8 @@ class _WordDetailsState extends State<WordDetails> {
       appBar: AppBar(
         backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
-        title: RichText(
-          text: TextSpan(
-            text: widget.word[0].toUpperCase(), // WORD
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18.5,
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.normal,
-            ),
-            children: [
-              TextSpan(
-                text: widget.word.substring(1, widget.word.length),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18.5,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
+        title: Text(
+          widget.word,
         ),
         actions: [
           IconButton(

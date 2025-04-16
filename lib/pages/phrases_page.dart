@@ -13,6 +13,7 @@ class PhrasesPage extends StatefulWidget {
 
 class _PhrasesPageState extends State<PhrasesPage> {
   late PhrasesDB _phrasesDB;
+  bool isSwitched = false;
 
   @override
   void initState() {
@@ -49,11 +50,20 @@ class _PhrasesPageState extends State<PhrasesPage> {
 
   final FlutterTts flutterTts = FlutterTts();
 
-  void speak(String text) async {
+  speakLozi(String text) async {
     await flutterTts.setVolume(1.0);
     await flutterTts.setLanguage("sw");
     await flutterTts.setSpeechRate(0.4);
-    await flutterTts.speak(text);
+    return await flutterTts.speak(text);
+  }
+
+  speakEnglish(String text) async {
+    await flutterTts.setPitch(0.1);
+    await flutterTts.setVolume(1.0);
+    await flutterTts.setLanguage("en");
+    await flutterTts.setVoice({"name":"en-us-x-sfg#male_1-local", "locale":"en-US"});
+    await flutterTts.setSpeechRate(0.4);
+    return await flutterTts.speak(text);
   }
 
   @override
@@ -67,6 +77,22 @@ class _PhrasesPageState extends State<PhrasesPage> {
         backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
         title: const Text('Phrases'),
+        actions: [
+          Transform.scale(
+            scale: 0.7,
+            child: Switch(
+              value: isSwitched,
+              onChanged: (value) {
+                setState(
+                  () {
+                    isSwitched = value;
+                  },
+                );
+              },
+              activeColor: Colors.white,
+            ),
+          ),
+        ],
       ),
       body: Scaffold(
         drawer: const DrawerPage(),
@@ -87,9 +113,14 @@ class _PhrasesPageState extends State<PhrasesPage> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
                   ),
-                  prefixIcon: const Icon(
-                    Icons.help_outline,
-                    color: Colors.grey,
+                  prefixIcon: GestureDetector(
+                    onTap: () => {
+
+                    },
+                    child: const Icon(
+                      Icons.help_outline,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
               ),
@@ -113,8 +144,12 @@ class _PhrasesPageState extends State<PhrasesPage> {
                               ),
                               children: [
                                 TextSpan(
-                                  text: _foundWords[index].phrEnglish[0].toUpperCase() +
-                                      _foundWords[index].phrEnglish.substring(1),
+                                  text: _foundWords[index]
+                                          .phrEnglish[0]
+                                          .toUpperCase() +
+                                      _foundWords[index]
+                                          .phrEnglish
+                                          .substring(1),
                                   style: const TextStyle(
                                     color: Colors.green,
                                     fontSize: 15.5,
@@ -135,7 +170,9 @@ class _PhrasesPageState extends State<PhrasesPage> {
                               ),
                               children: [
                                 TextSpan(
-                                  text: _foundWords[index].phrSilozi[0].toUpperCase() +
+                                  text: _foundWords[index]
+                                          .phrSilozi[0]
+                                          .toUpperCase() +
                                       _foundWords[index].phrSilozi.substring(1),
                                   style: const TextStyle(
                                     color: Colors.blueGrey,
@@ -152,7 +189,11 @@ class _PhrasesPageState extends State<PhrasesPage> {
                               color: Colors.grey,
                             ),
                             onTap: () {
-                              speak(_foundWords[index].phrSilozi);
+                              if (isSwitched == true) {
+                                speakLozi(_foundWords[index].phrSilozi);
+                              } else {
+                                speakEnglish(_foundWords[index].phrEnglish);
+                              }
                             },
                           ),
                         ),
