@@ -3,6 +3,7 @@ import 'package:englozi/features/drawer.dart';
 import 'package:englozi/model/phr_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:englozi/features/help/englozi_switch.dart';
 
 class PhrasesPage extends StatefulWidget {
   const PhrasesPage({Key? key}) : super(key: key);
@@ -61,7 +62,8 @@ class _PhrasesPageState extends State<PhrasesPage> {
     await flutterTts.setPitch(0.1);
     await flutterTts.setVolume(1.0);
     await flutterTts.setLanguage("en");
-    await flutterTts.setVoice({"name":"en-us-x-sfg#male_1-local", "locale":"en-US"});
+    await flutterTts
+        .setVoice({"name": "en-us-x-sfg#male_1-local", "locale": "en-US"});
     await flutterTts.setSpeechRate(0.4);
     return await flutterTts.speak(text);
   }
@@ -115,7 +117,12 @@ class _PhrasesPageState extends State<PhrasesPage> {
                   ),
                   prefixIcon: GestureDetector(
                     onTap: () => {
-
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const EngloziSwitch(),
+                        ),
+                      ),
                     },
                     child: const Icon(
                       Icons.help_outline,
