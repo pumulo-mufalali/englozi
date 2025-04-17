@@ -22,6 +22,8 @@ class _PhrasesPageState extends State<PhrasesPage> {
     _phrasesDB = PhrasesDB.instance;
     _phrasesDB.database;
     getData();
+
+    flutterTts.awaitSpeakCompletion(true);
   }
 
   List<PhraseDictionary> _foundWords = [];
@@ -52,18 +54,33 @@ class _PhrasesPageState extends State<PhrasesPage> {
   final FlutterTts flutterTts = FlutterTts();
 
   speakLozi(String text) async {
+    await flutterTts.stop();
     await flutterTts.setVolume(1.0);
-    await flutterTts.setLanguage("sw");
     await flutterTts.setSpeechRate(0.4);
+    await flutterTts.awaitSpeakCompletion(true);
+
+    try {
+      await flutterTts.setLanguage("sw");
+      var result = await flutterTts.speak(text);
+      print("Swahili TTS result: $result");
+
+      if (result != 0) {
+        print("Swahili failed. Using English voice.");
+        await flutterTts.setLanguage("en");
+        await flutterTts.speak(text);
+      }
+    } catch (e) {
+      print("TTS Error: $e");
+    }
     return await flutterTts.speak(text);
   }
 
+
   speakEnglish(String text) async {
-    await flutterTts.setPitch(0.1);
+    await flutterTts.stop();
     await flutterTts.setVolume(1.0);
     await flutterTts.setLanguage("en");
-    await flutterTts
-        .setVoice({"name": "en-us-x-sfg#male_1-local", "locale": "en-US"});
+    await flutterTts.setVoice({"name": "en-us-x-sfg#male_1-local", "locale": "en-US"});
     await flutterTts.setSpeechRate(0.4);
     return await flutterTts.speak(text);
   }

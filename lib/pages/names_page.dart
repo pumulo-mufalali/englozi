@@ -75,7 +75,7 @@ class _NamesPageState extends State<NamesPage> {
                 onChanged: (value) => _filters(value),
                 cursorColor: Colors.black87,
                 decoration: const InputDecoration(
-                  hintText: 'Type a name here...',
+                  hintText: 'Search a name here...',
                   labelStyle: TextStyle(
                     color: Colors.black45,
                     fontWeight: FontWeight.normal,
@@ -90,7 +90,7 @@ class _NamesPageState extends State<NamesPage> {
                     return Padding(
                       padding: const EdgeInsets.only(top: 12.0),
                       child: Card(
-                        color: Colors.white,
+                        color: Colors.white70,
                         elevation: 3.5,
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),

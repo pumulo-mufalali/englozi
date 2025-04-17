@@ -2,8 +2,11 @@ import 'package:englozi/features/drawer.dart';
 import 'package:englozi/pages/dictionary_page.dart';
 import 'package:englozi/pages/names_page.dart';
 import 'package:englozi/pages/phrases_page.dart';
+import 'package:englozi/pages/pronounciation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
+
+import 'features/favourite.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -14,7 +17,15 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> {
   int _focuses = 1;
-  List<String> cards = ['PHRASES', 'TRANSLATOR', 'NAMES'];
+  int _currentIndex = 0;
+
+  final List<Widget> _pages = [
+    const WelcomePage(),
+    const FavouritePage(),
+    const PronunciationPage(),
+  ];
+
+  List<String> cards = ['Phrases', 'Translator', 'Names'];
 
   void _onItemFocus(int index) {
     setState(() {
@@ -33,9 +44,11 @@ class _WelcomePageState extends State<WelcomePage> {
       return SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 60,),
+            const SizedBox(
+              height: 60,
+            ),
             Card(
               elevation: 15.0,
               color: Colors.teal,
@@ -50,7 +63,7 @@ class _WelcomePageState extends State<WelcomePage> {
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 35.0,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.normal,
                         ),
                       ),
                     ),

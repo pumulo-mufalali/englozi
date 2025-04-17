@@ -1,8 +1,10 @@
 import 'package:englozi/databases/dictionary_db.dart';
 import 'package:englozi/databases/history_db.dart';
 import 'package:englozi/features/drawer.dart';
+import 'package:englozi/features/favourite.dart';
 import 'package:englozi/model/dic_model.dart';
 import 'package:englozi/model/his_model.dart';
+import 'package:englozi/pages/pronounciation_page.dart';
 import 'package:englozi/pages/word_details_page.dart';
 import 'package:englozi/welcome_page.dart';
 import 'package:flutter/material.dart';
