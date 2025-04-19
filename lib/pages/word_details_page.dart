@@ -1,7 +1,7 @@
-import 'package:englozi/databases/dictionary_db.dart';
+import 'package:englozi/databases/translator_db.dart';
 import 'package:englozi/databases/favourite_db.dart';
 import 'package:englozi/features/drawer.dart';
-import 'package:englozi/model/dic_model.dart';
+import 'package:englozi/model/tra_model.dart';
 import 'package:englozi/model/fav_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -241,7 +241,7 @@ class _WordDetailsState extends State<WordDetails> {
   late DatabaseHelper dbHelper;
 
   final FlutterTts flutterTts = FlutterTts();
-  late List<DictionaryModel> words;
+  late List<TranslatorModel> words;
   List<Favourite> wordz = [];
 
   bool? isPressed;

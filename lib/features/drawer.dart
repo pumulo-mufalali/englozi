@@ -1,11 +1,10 @@
 import 'dart:io';
 import 'dart:math';
-
-import 'package:englozi/databases/dictionary_db.dart';
+import 'package:englozi/databases/translator_db.dart';
 import 'package:englozi/databases/history_db.dart';
 import 'package:englozi/features/favourite.dart';
 import 'package:englozi/features/history.dart';
-import 'package:englozi/model/dic_model.dart';
+import 'package:englozi/model/tra_model.dart';
 import 'package:englozi/model/his_model.dart';
 import 'package:englozi/pages/pronounciation_page.dart';
 import 'package:englozi/pages/word_details_page.dart';
@@ -23,7 +22,7 @@ class _DrawerPageState extends State<DrawerPage> {
   late DatabaseHistory dbHistory;
 
   List<History> _foundWords = [];
-  late List<DictionaryModel> words;
+  late List<TranslatorModel> words;
 
   @override
   void initState() {

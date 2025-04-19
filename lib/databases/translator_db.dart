@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:englozi/model/dic_model.dart';
+import 'package:englozi/model/tra_model.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -35,7 +35,7 @@ class DatabaseHelper {
 
       ByteData data = await rootBundle.load(join('assets', _dbName));
       List<int> byte =
-          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
       await File(path).writeAsBytes(byte, flush: true);
     } else {
@@ -45,19 +45,19 @@ class DatabaseHelper {
     return await openDatabase(path, version: _dbVersion);
   }
 
-  Future<List<DictionaryModel>> queryAll() async {
+  Future<List<TranslatorModel>> queryAll() async {
     Database db = await instance.database;
     final List<Map<String, dynamic>> data = await db.query(_tableName);
 
-    return data.map((e) => DictionaryModel.fromMap(e)).toList();
+    return data.map((e) => TranslatorModel.fromMap(e)).toList();
   }
 
-  Future<List<DictionaryModel>> searchWords(String keyword) async {
+  Future<List<TranslatorModel>> searchWords(String keyword) async {
     Database db = await instance.database;
 
     List<Map<String, dynamic>> allRows = await db
         .query(_tableName, where: 'word LIKE ?', whereArgs: ['$keyword%']);
-    return allRows.map((e) => DictionaryModel.fromMap(e)).toList();
+    return allRows.map((e) => TranslatorModel.fromMap(e)).toList();
   }
 
   Future<Map<String, bool>> checkWordsExist(List<String> words) async {

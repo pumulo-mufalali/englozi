@@ -1,22 +1,20 @@
-import 'package:englozi/databases/dictionary_db.dart';
+import 'package:englozi/databases/translator_db.dart';
 import 'package:englozi/databases/history_db.dart';
 import 'package:englozi/features/drawer.dart';
-import 'package:englozi/features/favourite.dart';
-import 'package:englozi/model/dic_model.dart';
+import 'package:englozi/model/tra_model.dart';
 import 'package:englozi/model/his_model.dart';
-import 'package:englozi/pages/pronounciation_page.dart';
 import 'package:englozi/pages/word_details_page.dart';
 import 'package:englozi/welcome_page.dart';
 import 'package:flutter/material.dart';
 
-class DictionaryPage extends StatefulWidget {
-  const DictionaryPage({Key? key}) : super(key: key);
+class TranslatorPage extends StatefulWidget {
+  const TranslatorPage({Key? key}) : super(key: key);
 
   @override
-  State<DictionaryPage> createState() => _DictionaryPageState();
+  State<TranslatorPage> createState() => _TranslatorPageState();
 }
 
-class _DictionaryPageState extends State<DictionaryPage> {
+class _TranslatorPageState extends State<TranslatorPage> {
   late DatabaseHelper dbHelper;
   late DatabaseHistory dbHistory;
 
@@ -30,13 +28,13 @@ class _DictionaryPageState extends State<DictionaryPage> {
     dbHistory.database;
   }
 
-  List<DictionaryModel> _foundWords = [];
+  List<TranslatorModel> _foundWords = [];
 
   String? keyword;
 
   void _filters(String key) async {
     keyword = key;
-    List<DictionaryModel> results = [];
+    List<TranslatorModel> results = [];
     if (keyword!.isEmpty) {
       results = [];
     } else {

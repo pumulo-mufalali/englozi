@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:englozi/model/fav_model.dart';
 import 'package:englozi/pages/word_details_page.dart';
 import 'package:englozi/databases/favourite_db.dart';
-import 'package:englozi/databases/dictionary_db.dart';
+import 'package:englozi/databases/translator_db.dart';
 
 class FavouritePage extends StatefulWidget {
   const FavouritePage({Key? key}) : super(key: key);
@@ -144,46 +144,51 @@ class _FavouritePageState extends State<FavouritePage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _favourites.isEmpty
-          ? const Center(child: Text('No favourites yet'))
-          : ListView.builder(
-        itemCount: _favourites.length,
-        itemBuilder: (context, index) {
-          final favourite = _favourites[index];
-          return Dismissible(
-            key: Key(favourite.id.toString()),
-            background: Container(color: Colors.red),
-            direction: DismissDirection.endToStart,
-            onDismissed: (_) => _deleteFavourite(favourite),
-            confirmDismiss: (_) async {
-              return await showDialog(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  title: const Text("Confirm", style: TextStyle(color: Colors.red)),
-                  content: const Text("Remove from favourites?"),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(ctx, false),
-                      child: const Text("Cancel", style: TextStyle(color: Colors.black),),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(ctx, true),
-                      child: const Text("Remove", style: TextStyle(color: Colors.red)),
-                    ),
-                  ],
+              ? const Center(child: Text('No favourites yet'))
+              : ListView.builder(
+                  itemCount: _favourites.length,
+                  itemBuilder: (context, index) {
+                    final favourite = _favourites[index];
+                    return Dismissible(
+                      key: Key(favourite.id.toString()),
+                      background: Container(color: Colors.red),
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (_) => _deleteFavourite(favourite),
+                      confirmDismiss: (_) async {
+                        return await showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: const Text("Confirm",
+                                style: TextStyle(color: Colors.red)),
+                            content: const Text("Remove from favourites?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, false),
+                                child: const Text(
+                                  "Cancel",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, true),
+                                child: const Text("Remove",
+                                    style: TextStyle(color: Colors.red)),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: ListTile(
+                        title: Text(favourite.word),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () => _deleteFavourite(favourite),
+                        ),
+                        onTap: () => _navigateToWordDetail(favourite.word),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-            child: ListTile(
-              title: Text(favourite.word),
-              trailing: IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () => _deleteFavourite(favourite),
-              ),
-              onTap: () => _navigateToWordDetail(favourite.word),
-            ),
-          );
-        },
-      ),
     );
   }
 }
