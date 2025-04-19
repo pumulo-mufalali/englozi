@@ -3,9 +3,13 @@ import 'package:englozi/databases/history_db.dart';
 import 'package:englozi/features/drawer.dart';
 import 'package:englozi/model/tra_model.dart';
 import 'package:englozi/model/his_model.dart';
+import 'package:englozi/pages/pronounciation_page.dart';
 import 'package:englozi/pages/word_details_page.dart';
 import 'package:englozi/welcome_page.dart';
 import 'package:flutter/material.dart';
+
+import '../features/bottom_navbar.dart';
+import '../features/favourite.dart';
 
 class TranslatorPage extends StatefulWidget {
   const TranslatorPage({Key? key}) : super(key: key);
@@ -17,6 +21,22 @@ class TranslatorPage extends StatefulWidget {
 class _TranslatorPageState extends State<TranslatorPage> {
   late DatabaseHelper dbHelper;
   late DatabaseHistory dbHistory;
+
+
+  int _currentIndex = 0;
+  void _onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+
+    if (index == 1) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const FavouritePage()));
+    } else if (index == 2) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const PronunciationPage()));
+    }
+  }
 
   @override
   void initState() {
@@ -219,9 +239,9 @@ class _TranslatorPageState extends State<TranslatorPage> {
                     : keyword!.isNotEmpty
                         ? const Center(
                             child: Text(
-                              '\n\nNothing found',
+                              '\n\nWord not available yet',
                               style:
-                                  TextStyle(color: Colors.red, fontSize: 25.0),
+                                  TextStyle(color: Colors.grey, fontSize: 18.5),
                             ),
                           )
                         : const Text(''),
@@ -230,6 +250,10 @@ class _TranslatorPageState extends State<TranslatorPage> {
             ),
           ),
         ),
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: _onTabTapped,
       ),
     );
   }

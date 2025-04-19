@@ -3,8 +3,12 @@ import 'package:englozi/databases/favourite_db.dart';
 import 'package:englozi/features/drawer.dart';
 import 'package:englozi/model/tra_model.dart';
 import 'package:englozi/model/fav_model.dart';
+import 'package:englozi/pages/pronounciation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+
+import '../features/bottom_navbar.dart';
+import '../features/favourite.dart';
 
 class WordDetails extends StatefulWidget {
   String word;
@@ -46,6 +50,30 @@ class WordDetails extends StatefulWidget {
 class _WordDetailsState extends State<WordDetails> {
   bool _isFavourited = false;
   late DatabaseFavourite dbFavourite = DatabaseFavourite.instance;
+
+  int _currentIndex = 0;
+
+  void _onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+
+    if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const FavouritePage(),
+        ),
+      );
+    } else if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const PronunciationPage(),
+        ),
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -664,6 +692,10 @@ class _WordDetailsState extends State<WordDetails> {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: _onTabTapped,
       ),
     );
   }

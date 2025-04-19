@@ -18,25 +18,43 @@ class CustomBottomNavBar extends StatelessWidget {
       type: BottomNavigationBarType.fixed,
       showSelectedLabels: false,
       showUnselectedLabels: false,
-      selectedItemColor: Colors.teal,
+      selectedItemColor: Colors.transparent,
       unselectedItemColor: Colors.grey,
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.shuffle),
-          label: '',
-          tooltip: 'Random word',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.favorite),
-          label: '',
-          tooltip: 'Favourite',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.record_voice_over),
-          label: '',
-          tooltip: 'Pronunciation',
-        ),
+      selectedIconTheme: const IconThemeData(
+        color: Colors.transparent,
+      ),
+      unselectedIconTheme: const IconThemeData(
+        color: Colors.grey,
+      ),
+      items: [
+        _buildNavItem(Icons.shuffle, 0),
+        _buildNavItem(Icons.home, 1),
+        _buildNavItem(Icons.record_voice_over, 2),
       ],
     );
+  }
+
+  BottomNavigationBarItem _buildNavItem(IconData icon, int index) {
+    return BottomNavigationBarItem(
+      icon: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: currentIndex == index ? Colors.teal.withOpacity(0.2) : Colors.transparent,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: currentIndex == index ? Colors.teal : Colors.grey),
+      ),
+      label: '',
+      tooltip: _getTooltip(index),
+    );
+  }
+
+  String _getTooltip(int index) {
+    switch(index) {
+      case 0: return 'Random word';
+      case 1: return 'Home';
+      case 2: return 'Pronunciation';
+      default: return '';
+    }
   }
 }
