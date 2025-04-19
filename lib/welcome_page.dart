@@ -5,8 +5,7 @@ import 'package:englozi/pages/phrases_page.dart';
 import 'package:englozi/pages/pronounciation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
-
-import 'features/favourite.dart';
+import 'package:englozi/features/favourite.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -19,18 +18,24 @@ class _WelcomePageState extends State<WelcomePage> {
   int _focuses = 1;
   int _currentIndex = 0;
 
-  final List<Widget> _pages = [
-    const WelcomePage(),
-    const FavouritePage(),
-    const PronunciationPage(),
-  ];
-
   List<String> cards = ['Phrases', 'Translator', 'Names'];
 
   void _onItemFocus(int index) {
     setState(() {
       _focuses = index;
     });
+  }
+
+  void _onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+
+    if (index == 1) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const FavouritePage()));
+    } else if (index == 2) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const PronunciationPage()));
+    }
   }
 
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey();
@@ -46,9 +51,7 @@ class _WelcomePageState extends State<WelcomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(
-              height: 60,
-            ),
+            const SizedBox(height: 60),
             Card(
               elevation: 15.0,
               color: Colors.teal,
@@ -127,39 +130,52 @@ class _WelcomePageState extends State<WelcomePage> {
           ),
         ),
       ),
-      body: Scaffold(
-        resizeToAvoidBottomInset: true,
-        drawer: const DrawerPage(),
-        key: _scaffoldkey,
-        body: Column(
-          children: [
-            const SizedBox(
-              height: 10,
+      drawer: const DrawerPage(),
+      key: _scaffoldkey,
+      body: Column(
+        children: [
+          const SizedBox(height: 10),
+          const Text(
+            ' << Swipe >> ',
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 35.0,
+              fontWeight: FontWeight.bold,
             ),
-            const Text(
-              ' << Swipe >> ',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 35.0,
-                fontWeight: FontWeight.bold,
-              ),
+          ),
+          Expanded(
+            child: ScrollSnapList(
+              itemBuilder: _buildItemList,
+              itemSize: 250,
+              initialIndex: 1,
+              duration: 100,
+              itemCount: cards.length,
+              dynamicItemSize: true,
+              onItemFocus: _onItemFocus,
             ),
-            Expanded(
-              child: ScrollSnapList(
-                itemBuilder: _buildItemList,
-                itemSize: 250,
-                initialIndex: 1,
-                duration: 100,
-                itemCount: cards.length,
-                dynamicItemSize: true,
-                onItemFocus: _onItemFocus,
-              ),
-            ),
-            const SizedBox(
-              height: 15.0,
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 15.0),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: _onTabTapped,
+        selectedItemColor: Colors.teal,
+        unselectedItemColor: Colors.grey,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favorites',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.record_voice_over),
+            label: 'Pronunciation',
+          ),
+        ],
       ),
     );
   }

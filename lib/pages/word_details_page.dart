@@ -274,6 +274,7 @@ class _WordDetailsState extends State<WordDetails> {
   speak(String text) async {
     await flutterTts.setPitch(0.1);
     await flutterTts.setVolume(1.0);
+    await flutterTts.setLanguage("en");
     await flutterTts.setSpeechRate(0.4);
     return await flutterTts.speak(text);
   }
