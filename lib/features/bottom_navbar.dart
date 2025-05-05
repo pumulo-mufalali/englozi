@@ -18,7 +18,7 @@ class CustomBottomNavBar extends StatelessWidget {
       type: BottomNavigationBarType.fixed,
       showSelectedLabels: false,
       showUnselectedLabels: false,
-      selectedItemColor: Colors.transparent,
+      // selectedItemColor: Colors.transparent,
       unselectedItemColor: Colors.grey,
       selectedIconTheme: const IconThemeData(
         color: Colors.transparent,
@@ -29,7 +29,7 @@ class CustomBottomNavBar extends StatelessWidget {
       items: [
         _buildNavItem(Icons.shuffle, 0),
         _buildNavItem(Icons.home, 1),
-        _buildNavItem(Icons.record_voice_over, 2),
+        _buildNavItem(Icons.volume_up, 2),
       ],
     );
   }

@@ -356,6 +356,7 @@ class _WordDetailsState extends State<WordDetails> {
         elevation: 0.0,
       ),
       body: Scaffold(
+        resizeToAvoidBottomInset: true,
         backgroundColor: Colors.white,
         drawer: const DrawerPage(),
         body: SingleChildScrollView(

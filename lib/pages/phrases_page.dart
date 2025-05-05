@@ -53,26 +53,18 @@ class _PhrasesPageState extends State<PhrasesPage> {
 
   final FlutterTts flutterTts = FlutterTts();
 
-  Future<bool> speakLozi(String text, String languageCode) async {
-    try {
-      await flutterTts.stop();
-      if (!(await flutterTts.isLanguageAvailable(languageCode))) {
-        print("Language $languageCode not available");
-        return false;
-      }
-      await flutterTts.setVolume(1.0);
-      await flutterTts.setLanguage(languageCode);
-      await flutterTts.setSpeechRate(0.3);
-      await flutterTts.speak(text);
-      return true;
-    } catch (e) {
-      print("TTS error for $languageCode: $e");
-      return false;
-    }
+  void speakLozi(String text) async {
+    await flutterTts.stop();
+    // await flutterTts.setPitch(0.5);
+    await flutterTts.setVolume(1.0);
+    await flutterTts.setLanguage("sw");
+    await flutterTts.setSpeechRate(0.4);
+    await flutterTts.speak(text);
   }
 
   speakEnglish(String text) async {
     await flutterTts.stop();
+    await flutterTts.setPitch(0.5);
     await flutterTts.setVolume(1.0);
     await flutterTts.setLanguage("en");
     await flutterTts.setSpeechRate(0.4);
@@ -102,7 +94,7 @@ class _PhrasesPageState extends State<PhrasesPage> {
                   },
                 );
               },
-              activeColor: Colors.white,
+              activeColor: Colors.tealAccent,
             ),
           ),
         ],
@@ -210,7 +202,7 @@ class _PhrasesPageState extends State<PhrasesPage> {
                               if (isSwitched != true) {
                                 speakEnglish(_foundWords[index].phrEnglish);
                               } else {
-                                speakLozi(_foundWords[index].phrSilozi, "sw");
+                                speakLozi(_foundWords[index].phrSilozi);
                               }
                             },
                           ),

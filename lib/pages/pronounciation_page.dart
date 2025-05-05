@@ -12,9 +12,20 @@ class _PronunciationPageState extends State<PronunciationPage> {
   final FlutterTts flutterTts = FlutterTts();
   TextEditingController txtController = TextEditingController();
 
-  void speak(String text) async {
-    await flutterTts.setPitch(0.1);
+  bool isSwitched = false;
+
+  void speakEnglish(String text) async {
+    await flutterTts.stop();
     await flutterTts.setVolume(1.0);
+    await flutterTts.setLanguage("en");
+    await flutterTts.setSpeechRate(0.4);
+    await flutterTts.speak(text);
+  }
+
+  void speakLozi(String text) async {
+    await flutterTts.stop();
+    await flutterTts.setVolume(1.0);
+    await flutterTts.setLanguage("sw");
     await flutterTts.setSpeechRate(0.4);
     await flutterTts.speak(text);
   }
@@ -28,6 +39,22 @@ class _PronunciationPageState extends State<PronunciationPage> {
         elevation: 0.0,
         title: const Text('Pronunciation'),
         centerTitle: true,
+        actions: [
+          Transform.scale(
+            scale: 0.7,
+            child: Switch(
+              value: isSwitched,
+              onChanged: (value) {
+                setState(
+                      () {
+                    isSwitched = value;
+                  },
+                );
+              },
+              activeColor: Colors.tealAccent,
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -52,7 +79,7 @@ class _PronunciationPageState extends State<PronunciationPage> {
                   backgroundColor: Colors.teal,
                 ),
                 onPressed: () {
-                  speak(txtController.text);
+                  isSwitched ? speakEnglish(txtController.text) : speakLozi(txtController.text);
                 },
                 child: const Icon(Icons.volume_up, color: Colors.white,))
           ],
