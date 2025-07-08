@@ -8,7 +8,7 @@ import 'package:englozi/pages/word_details_page.dart';
 import 'package:englozi/welcome_page.dart';
 import 'package:flutter/material.dart';
 
-import '../features/bottom_navbar.dart';
+// import '../features/bottom_navbar.dart';
 import '../features/favourite.dart';
 
 class TranslatorPage extends StatefulWidget {
@@ -250,11 +250,7 @@ class _TranslatorPageState extends State<TranslatorPage> {
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-      ),
+      )
     );
   }
 }

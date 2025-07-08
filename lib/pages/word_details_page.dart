@@ -7,7 +7,7 @@ import 'package:englozi/pages/pronounciation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
-import '../features/bottom_navbar.dart';
+// import '../features/bottom_navbar.dart';
 import '../features/favourite.dart';
 
 class WordDetails extends StatefulWidget {
@@ -693,10 +693,6 @@ class _WordDetailsState extends State<WordDetails> {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
       ),
     );
   }

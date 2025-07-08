@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 import 'package:englozi/features/favourite.dart';
 
-import 'features/bottom_navbar.dart';
+// import 'features/bottom_navbar.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -161,10 +161,6 @@ class _WelcomePageState extends State<WelcomePage> {
             const SizedBox(height: 15.0),
           ],
         ),
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-      ),
     );
   }
 }
