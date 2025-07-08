@@ -1,6 +1,6 @@
 # Englozi 🇿🇲📱
 
-**Englozi** is a Flutter-based mobile app that helps users learn and understand the **Lozi language** through English translations. The app includes names, words, and common phrases — each with pronunciation in both English and Lozi.
+**Englozi** is a Flutter-based mobile app that helps users learn and understand the **Lozi language** through English translations. The app includes names, words, and common phrases; each with pronunciation in both English and Lozi.
 
 ---
 
