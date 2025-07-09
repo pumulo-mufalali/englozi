@@ -25,7 +25,7 @@
 
 ## 📸 Screenshots
 
-[*comming soon*]
+https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/the_three_sections.png?raw=true
 
 ---
 
