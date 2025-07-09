@@ -25,13 +25,20 @@
 
 ## 📸 Screenshots
 
+### Splash Screen
 ![Splash Screen](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/splash_screen.png?raw=true)
+### Sections
 ![Sections](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/the_three_sections.png?raw=true)
-![Word Detail](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/word_details.png?raw=true)
-![Word Search](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/word_search.png?raw=true)
-![Lozi Names](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/lozi_names.png?raw=true)
-![Phrases](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/phrases.png?raw=true)
+### Side Drawer
 ![Side Drawer](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/side_drawer.png?raw=true)
+### Word Search
+![Word Search](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/word_search.png?raw=true)
+### Word Detail
+![Word Detail](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/word_details.png?raw=true)
+### Lozi Names
+![Lozi Names](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/lozi_names.png?raw=true)
+### Phrases
+![Phrases](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/phrases.png?raw=true)
 
 ---
 
