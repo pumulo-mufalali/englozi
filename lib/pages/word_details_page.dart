@@ -51,29 +51,10 @@ class _WordDetailsState extends State<WordDetails> {
   bool _isFavourited = false;
   late DatabaseFavourite dbFavourite = DatabaseFavourite.instance;
 
-  int _currentIndex = 0;
 
-  void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+  double titleSize = 18.0;
+  double subtitleSize = 17.5;
 
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const FavouritePage(),
-        ),
-      );
-    } else if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const PronunciationPage(),
-        ),
-      );
-    }
-  }
 
   @override
   void initState() {
@@ -124,7 +105,7 @@ class _WordDetailsState extends State<WordDetails> {
                           style: TextStyle(
                             color: exists ? Colors.blue : Colors.black,
                             decoration: exists ? TextDecoration.none : null,
-                            fontSize: 15.5,
+                            fontSize: subtitleSize,
                           ),
                         ),
                       );
@@ -144,11 +125,11 @@ class _WordDetailsState extends State<WordDetails> {
       padding: const EdgeInsets.only(left: 16, top: 8, bottom: 4),
       child: Text(
         title,
-        style: const TextStyle(
-          color: Colors.black,
+        style: TextStyle(
+          color: Colors.redAccent,
           fontStyle: FontStyle.italic,
           fontWeight: FontWeight.bold,
-          fontSize: 16.5,
+          fontSize: titleSize,
         ),
       ),
     );
@@ -209,9 +190,9 @@ class _WordDetailsState extends State<WordDetails> {
         spans.add(
           TextSpan(
             text: text.substring(lastEnd, match.start),
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.black,
-              fontSize: 15.5,
+              fontSize: subtitleSize,
             ),
           ),
         );
@@ -221,19 +202,19 @@ class _WordDetailsState extends State<WordDetails> {
       spans.addAll([
         const TextSpan(
           text: '(',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.blue, fontStyle: FontStyle.italic,),
         ),
         TextSpan(
           text: fullMatch.substring(1, fullMatch.length - 1),
           style: const TextStyle(
             color: Colors.blue,
-            fontStyle: FontStyle.normal,
-            fontSize: 15.5,
+            fontStyle: FontStyle.italic,
+            fontSize: 16.5,
           ),
         ),
         const TextSpan(
           text: ')',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.blue, fontStyle: FontStyle.italic,),
         ),
       ]);
 
@@ -243,8 +224,12 @@ class _WordDetailsState extends State<WordDetails> {
     if (lastEnd < text.length) {
       spans.add(TextSpan(
         text: text.substring(lastEnd),
-        style: const TextStyle(color: Colors.black),
-      ));
+        style: TextStyle(
+            color: Colors.black,
+            fontSize: subtitleSize
+        ),
+      ),
+      );
     }
 
     return TextSpan(children: spans);
@@ -383,7 +368,7 @@ class _WordDetailsState extends State<WordDetails> {
                                 text: TextSpan(
                                   text: widget.description![0].toUpperCase(),
                                   style: const TextStyle(
-                                      fontSize: 15.5,
+                                      fontSize: 16.5,
                                       color: Colors.grey,
                                       fontStyle: FontStyle.italic),
                                   children: [
@@ -391,7 +376,7 @@ class _WordDetailsState extends State<WordDetails> {
                                       text: widget.description!.substring(
                                           1, widget.description!.length),
                                       style: const TextStyle(
-                                          fontSize: 15.5,
+                                          fontSize: 16.5,
                                           color: Colors.grey,
                                           fontStyle: FontStyle.italic),
                                     ),
@@ -417,13 +402,13 @@ class _WordDetailsState extends State<WordDetails> {
                       : const SizedBox(),
                   if (widget.noun!.isNotEmpty)
                     ListTile(
-                      title: const Text(
+                      title: Text(
                         'Noun',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16.5,
+                          fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
@@ -443,17 +428,18 @@ class _WordDetailsState extends State<WordDetails> {
                       : const SizedBox(),
                   if (widget.plural!.isNotEmpty)
                     ListTile(
-                      title: const Text(
+                      title: Text(
                         'Plural',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16.5,
+                          fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
-                        text: _buildStyledText(widget.plural!),
+                        text: _buildStyledText(widget.plural!,),
+
                       ),
                     )
                   else
@@ -469,13 +455,13 @@ class _WordDetailsState extends State<WordDetails> {
                       : const SizedBox(),
                   if (widget.verb!.isNotEmpty)
                     ListTile(
-                      title: const Text(
+                      title: Text(
                         'Verb',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16.5,
+                          fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
@@ -495,13 +481,13 @@ class _WordDetailsState extends State<WordDetails> {
                       : const SizedBox(),
                   if (widget.t_verb!.isNotEmpty)
                     ListTile(
-                      title: const Text(
+                      title: Text(
                         'Transitive verb',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16.5,
+                          fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
@@ -521,13 +507,13 @@ class _WordDetailsState extends State<WordDetails> {
                       : const SizedBox(),
                   if (widget.i_verb!.isNotEmpty)
                     ListTile(
-                      title: const Text(
+                      title: Text(
                         'Intransitive verb',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16.5,
+                          fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
@@ -547,13 +533,13 @@ class _WordDetailsState extends State<WordDetails> {
                       : const SizedBox(),
                   if (widget.phrase!.isNotEmpty)
                     ListTile(
-                      title: const Text(
+                      title: Text(
                         'Phrase',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16.5,
+                          fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
@@ -573,13 +559,13 @@ class _WordDetailsState extends State<WordDetails> {
                       : const SizedBox(),
                   if (widget.adjective!.isNotEmpty)
                     ListTile(
-                      title: const Text(
+                      title: Text(
                         'Adjective',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16.5,
+                          fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
@@ -599,13 +585,13 @@ class _WordDetailsState extends State<WordDetails> {
                       : const SizedBox(),
                   if (widget.adverb!.isNotEmpty)
                     ListTile(
-                      title: const Text(
+                      title: Text(
                         'Adverb',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16.5,
+                          fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
@@ -625,13 +611,13 @@ class _WordDetailsState extends State<WordDetails> {
                       : const SizedBox(),
                   if (widget.conjunction!.isNotEmpty)
                     ListTile(
-                      title: const Text(
+                      title: Text(
                         'Conjunction',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16.5,
+                          fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
@@ -651,13 +637,13 @@ class _WordDetailsState extends State<WordDetails> {
                       : const SizedBox(),
                   if (widget.preposition!.isNotEmpty)
                     ListTile(
-                      title: const Text(
+                      title: Text(
                         'Preposition',
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16.5,
+                          fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(

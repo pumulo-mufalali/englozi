@@ -42,3 +42,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Flutter-specific
+.build/
+pubspec.lock
+
+# Ignore asset files
+assets/
+
