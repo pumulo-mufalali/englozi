@@ -25,7 +25,7 @@
 
 ## 📸 Screenshots
 
-[*word_details*](https://github.com/pumulo-mufalali/englozi/blob/master/word_details.png?raw=true)
+[*comming soon*]
 
 ---
 
