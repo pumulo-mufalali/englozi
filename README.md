@@ -25,7 +25,7 @@
 
 ## 📸 Screenshots
 
-![Sections](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/the_three_sections.png?raw=true)
+![Sections](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/the_three_sections.png?raw=true#gh-light-mode-only){: width="350"}
 ![Lozi Names](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/lozi_names.png?raw=true)
 ![Phrases](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/phrases.png?raw=true)
 ![Side Drawer](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/side_drawer.png?raw=true)
