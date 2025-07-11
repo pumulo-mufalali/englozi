@@ -33,8 +33,8 @@
 |-------------|--------------|-------------|
 | ![Search](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/word_search.png?raw=true) | ![Detail](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/word_details.png?raw=true) | ![Names](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/lozi_names.png?raw=true) |
 
-| Phrases | Pronunciation | History |
-|---------|---------------|---------|
+| Phrases Page | Pronunciation | History Page |
+|--------------|---------------|--------------|
 | ![Phrases](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/phrases.png?raw=true) | ![Pronunciation](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/pronunciation_page.png?raw=true) | ![History](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/history_page.png?raw=true) |
 
 ---
