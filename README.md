@@ -30,7 +30,7 @@
 | ![Splash](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/splash_screen.png?raw=true) | ![Sections](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/the_three_sections.png?raw=true) | ![Drawer](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/side_drawer.png?raw=true) |
 
 | Word Search | Word Detail | Lozi Names |
-|-------------|--------------|-------------|
+|-------------|-------------|------------|
 | ![Search](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/word_search.png?raw=true) | ![Detail](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/word_details.png?raw=true) | ![Names](https://github.com/pumulo-mufalali/englozi/blob/master/lib/screenshots/lozi_names.png?raw=true) |
 
 | Phrases Page | Pronunciation | History Page |
@@ -45,3 +45,6 @@
 
    ```bash
    git clone https://github.com/pumulo-mufalali/englozi.git
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+This project is licensed under the [MIT License](./LICENSE).
