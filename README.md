@@ -6,15 +6,15 @@
 
 ## 📱 Features
 
-- 🧠 Learn Lozi words, names, and everyday phrases
-- 🔊 Audio pronunciations in English and Lozi
-- 🎯 Simple and intuitive UI
-- 🔍 Search functionality for quick access
-- 🇿🇲 Built to preserve and promote the Lozi language
+- Learn Lozi words, names, and everyday phrases
+- Audio pronunciations in English and Lozi
+- Simple and intuitive UI
+- Search functionality for quick access
+- Built to preserve and promote the Lozi language
 
 ---
 
-## 🚀 Tech Stack
+##  Tech Stack
 
 - **Flutter** (Frontend)
 - **Dart**
