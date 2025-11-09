@@ -22,7 +22,7 @@ class SplashScreen extends StatelessWidget {
                   ]
                 : [
                     const Color(0xFF14B8A6),
-                    const Color(0xFF2DD4BF),
+                    Colors.teal,
                     const Color(0xFF5EEAD4),
                   ],
           ),

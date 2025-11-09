@@ -3,12 +3,10 @@ import 'package:englozi/databases/favourite_db.dart';
 import 'package:englozi/features/drawer.dart';
 import 'package:englozi/model/tra_model.dart';
 import 'package:englozi/model/fav_model.dart';
-import 'package:englozi/pages/pronounciation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 // import '../features/bottom_navbar.dart';
-import '../features/favourite.dart';
 
 class WordDetails extends StatefulWidget {
   String word;
@@ -74,6 +72,7 @@ class _WordDetailsState extends State<WordDetails> {
     if (content == null || content.isEmpty) return const SizedBox();
 
     final words = content.split(',').map((word) => word.trim()).toList();
+    final theme = Theme.of(context);
 
     return Center(
       child: FutureBuilder<Map<String, bool>>(
@@ -92,7 +91,12 @@ class _WordDetailsState extends State<WordDetails> {
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: words.length,
-                    separatorBuilder: (_, __) => const Text(", "),
+                    separatorBuilder: (_, __) => Text(
+                      ", ",
+                      style: TextStyle(
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
                     itemBuilder: (context, index) {
                       final word = words[index];
                       final exists = snapshot.data![word] ?? false;
@@ -103,7 +107,9 @@ class _WordDetailsState extends State<WordDetails> {
                         child: Text(
                           word,
                           style: TextStyle(
-                            color: exists ? Colors.blue : Colors.black,
+                            color: exists 
+                                ? theme.colorScheme.primary 
+                                : theme.colorScheme.onSurface,
                             decoration: exists ? TextDecoration.none : null,
                             fontSize: subtitleSize,
                           ),
@@ -121,12 +127,13 @@ class _WordDetailsState extends State<WordDetails> {
   }
 
   Widget _buildSectionTitle(String title) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(left: 16, top: 8, bottom: 4),
       child: Text(
         title,
         style: TextStyle(
-          color: Colors.redAccent,
+          color: theme.colorScheme.secondary,
           fontStyle: FontStyle.italic,
           fontWeight: FontWeight.bold,
           fontSize: titleSize,
@@ -179,7 +186,8 @@ class _WordDetailsState extends State<WordDetails> {
     }
   }
 
-  TextSpan _buildStyledText(String text) {
+  TextSpan _buildStyledText(String text, BuildContext context) {
+    final theme = Theme.of(context);
     final regex = RegExp(r'(\(.*?\))');
     final matches = regex.allMatches(text);
     final List<TextSpan> spans = [];
@@ -191,7 +199,7 @@ class _WordDetailsState extends State<WordDetails> {
           TextSpan(
             text: text.substring(lastEnd, match.start),
             style: TextStyle(
-              color: Colors.black,
+              color: theme.colorScheme.onSurface,
               fontSize: subtitleSize,
             ),
           ),
@@ -200,21 +208,27 @@ class _WordDetailsState extends State<WordDetails> {
 
       final fullMatch = match.group(0)!;
       spans.addAll([
-        const TextSpan(
+        TextSpan(
           text: '(',
-          style: TextStyle(color: Colors.blue, fontStyle: FontStyle.italic,),
+          style: TextStyle(
+            color: theme.colorScheme.primary, 
+            fontStyle: FontStyle.italic,
+          ),
         ),
         TextSpan(
           text: fullMatch.substring(1, fullMatch.length - 1),
-          style: const TextStyle(
-            color: Colors.blue,
+          style: TextStyle(
+            color: theme.colorScheme.primary,
             fontStyle: FontStyle.italic,
             fontSize: 16.5,
           ),
         ),
-        const TextSpan(
+        TextSpan(
           text: ')',
-          style: TextStyle(color: Colors.blue, fontStyle: FontStyle.italic,),
+          style: TextStyle(
+            color: theme.colorScheme.primary, 
+            fontStyle: FontStyle.italic,
+          ),
         ),
       ]);
 
@@ -225,7 +239,7 @@ class _WordDetailsState extends State<WordDetails> {
       spans.add(TextSpan(
         text: text.substring(lastEnd),
         style: TextStyle(
-            color: Colors.black,
+            color: theme.colorScheme.onSurface,
             fontSize: subtitleSize
         ),
       ),
@@ -310,11 +324,11 @@ class _WordDetailsState extends State<WordDetails> {
 
     isPressed ??= false;
 
+    final theme = Theme.of(context);
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        backgroundColor: Colors.teal,
-        foregroundColor: Colors.white,
         title: Text(
           widget.word,
         ),
@@ -326,7 +340,7 @@ class _WordDetailsState extends State<WordDetails> {
           Container(
             height: 20,
             width: 2,
-            color: Colors.white.withOpacity(0.3),
+            color: theme.appBarTheme.foregroundColor?.withOpacity(0.3) ?? Colors.white.withOpacity(0.3),
             margin: const EdgeInsets.symmetric(horizontal: 12),
           ),
           IconButton(
@@ -338,20 +352,19 @@ class _WordDetailsState extends State<WordDetails> {
         ],
         centerTitle: false,
         automaticallyImplyLeading: true,
-        elevation: 0.0,
       ),
       body: Scaffold(
         resizeToAvoidBottomInset: true,
-        backgroundColor: Colors.white,
+        backgroundColor: theme.scaffoldBackgroundColor,
         drawer: const DrawerPage(),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
             children: [
               widget.description!.isNotEmpty
-                  ? const Divider(
+                  ? Divider(
                       height: 0.0,
-                      color: Colors.grey,
+                      color: theme.dividerColor,
                       thickness: 1.5,
                       endIndent: 15.0,
                       indent: 15.0,
@@ -367,17 +380,17 @@ class _WordDetailsState extends State<WordDetails> {
                             ? RichText(
                                 text: TextSpan(
                                   text: widget.description![0].toUpperCase(),
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                       fontSize: 16.5,
-                                      color: Colors.grey,
+                                      color: theme.textTheme.bodyMedium?.color ?? theme.colorScheme.onSurface.withOpacity(0.6),
                                       fontStyle: FontStyle.italic),
                                   children: [
                                     TextSpan(
                                       text: widget.description!.substring(
                                           1, widget.description!.length),
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           fontSize: 16.5,
-                                          color: Colors.grey,
+                                          color: theme.textTheme.bodyMedium?.color ?? theme.colorScheme.onSurface.withOpacity(0.6),
                                           fontStyle: FontStyle.italic),
                                     ),
                                   ],
@@ -392,9 +405,9 @@ class _WordDetailsState extends State<WordDetails> {
               Column(
                 children: [
                   widget.noun!.isNotEmpty
-                      ? const Divider(
+                      ? Divider(
                           height: 0.0,
-                          color: Colors.grey,
+                          color: theme.dividerColor,
                           thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
@@ -405,22 +418,22 @@ class _WordDetailsState extends State<WordDetails> {
                       title: Text(
                         'Noun',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: theme.colorScheme.onSurface,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
                           fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
-                        text: _buildStyledText(widget.noun!),
+                        text: _buildStyledText(widget.noun!, context),
                       ),
                     )
                   else
                     const SizedBox(),
                   widget.plural!.isNotEmpty
-                      ? const Divider(
+                      ? Divider(
                           height: 0.0,
-                          color: Colors.grey,
+                          color: theme.dividerColor,
                           thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
@@ -431,23 +444,23 @@ class _WordDetailsState extends State<WordDetails> {
                       title: Text(
                         'Plural',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: theme.colorScheme.onSurface,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
                           fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
-                        text: _buildStyledText(widget.plural!,),
+                        text: _buildStyledText(widget.plural!, context),
 
                       ),
                     )
                   else
                     const SizedBox(),
                   widget.verb!.isNotEmpty
-                      ? const Divider(
+                      ? Divider(
                           height: 0.0,
-                          color: Colors.grey,
+                          color: theme.dividerColor,
                           thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
@@ -458,22 +471,22 @@ class _WordDetailsState extends State<WordDetails> {
                       title: Text(
                         'Verb',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: theme.colorScheme.onSurface,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
                           fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
-                        text: _buildStyledText(widget.verb!),
+                        text: _buildStyledText(widget.verb!, context),
                       ),
                     )
                   else
                     const SizedBox(),
                   widget.t_verb!.isNotEmpty
-                      ? const Divider(
+                      ? Divider(
                           height: 0.0,
-                          color: Colors.grey,
+                          color: theme.dividerColor,
                           thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
@@ -484,22 +497,22 @@ class _WordDetailsState extends State<WordDetails> {
                       title: Text(
                         'Transitive verb',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: theme.colorScheme.onSurface,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
                           fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
-                        text: _buildStyledText(widget.t_verb!),
+                        text: _buildStyledText(widget.t_verb!, context),
                       ),
                     )
                   else
                     const SizedBox(),
                   widget.i_verb!.isNotEmpty
-                      ? const Divider(
+                      ? Divider(
                           height: 0.0,
-                          color: Colors.grey,
+                          color: theme.dividerColor,
                           thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
@@ -510,22 +523,22 @@ class _WordDetailsState extends State<WordDetails> {
                       title: Text(
                         'Intransitive verb',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: theme.colorScheme.onSurface,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
                           fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
-                        text: _buildStyledText(widget.i_verb!),
+                        text: _buildStyledText(widget.i_verb!, context),
                       ),
                     )
                   else
                     const SizedBox(),
                   widget.phrase!.isNotEmpty
-                      ? const Divider(
+                      ? Divider(
                           height: 0.0,
-                          color: Colors.grey,
+                          color: theme.dividerColor,
                           thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
@@ -536,22 +549,22 @@ class _WordDetailsState extends State<WordDetails> {
                       title: Text(
                         'Phrase',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: theme.colorScheme.onSurface,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
                           fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
-                        text: _buildStyledText(widget.phrase!),
+                        text: _buildStyledText(widget.phrase!, context),
                       ),
                     )
                   else
                     const SizedBox(),
                   widget.adjective!.isNotEmpty
-                      ? const Divider(
+                      ? Divider(
                           height: 0.0,
-                          color: Colors.grey,
+                          color: theme.dividerColor,
                           thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
@@ -562,22 +575,22 @@ class _WordDetailsState extends State<WordDetails> {
                       title: Text(
                         'Adjective',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: theme.colorScheme.onSurface,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
                           fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
-                        text: _buildStyledText(widget.adjective!),
+                        text: _buildStyledText(widget.adjective!, context),
                       ),
                     )
                   else
                     const SizedBox(),
                   widget.adverb!.isNotEmpty
-                      ? const Divider(
+                      ? Divider(
                           height: 0.0,
-                          color: Colors.grey,
+                          color: theme.dividerColor,
                           thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
@@ -588,22 +601,22 @@ class _WordDetailsState extends State<WordDetails> {
                       title: Text(
                         'Adverb',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: theme.colorScheme.onSurface,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
                           fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
-                        text: _buildStyledText(widget.adverb!),
+                        text: _buildStyledText(widget.adverb!, context),
                       ),
                     )
                   else
                     const SizedBox(),
                   widget.conjunction!.isNotEmpty
-                      ? const Divider(
+                      ? Divider(
                           height: 0.0,
-                          color: Colors.grey,
+                          color: theme.dividerColor,
                           thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
@@ -614,22 +627,22 @@ class _WordDetailsState extends State<WordDetails> {
                       title: Text(
                         'Conjunction',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: theme.colorScheme.onSurface,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
                           fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
-                        text: _buildStyledText(widget.conjunction!),
+                        text: _buildStyledText(widget.conjunction!, context),
                       ),
                     )
                   else
                     const SizedBox(),
                   widget.preposition!.isNotEmpty
-                      ? const Divider(
+                      ? Divider(
                           height: 0.0,
-                          color: Colors.grey,
+                          color: theme.dividerColor,
                           thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
@@ -640,22 +653,22 @@ class _WordDetailsState extends State<WordDetails> {
                       title: Text(
                         'Preposition',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: theme.colorScheme.onSurface,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold,
                           fontSize: titleSize,
                         ),
                       ),
                       subtitle: RichText(
-                        text: _buildStyledText(widget.preposition!),
+                        text: _buildStyledText(widget.preposition!, context),
                       ),
                     )
                   else
                     const SizedBox(),
                   widget.synonym!.isNotEmpty
-                      ? const Divider(
+                      ? Divider(
                           height: 0.0,
-                          color: Colors.grey,
+                          color: theme.dividerColor,
                           thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,
@@ -664,9 +677,9 @@ class _WordDetailsState extends State<WordDetails> {
                   if (widget.synonym?.isNotEmpty ?? false)
                     _buildClickableWordList(widget.synonym, "Synonym", context),
                   widget.antonym!.isNotEmpty
-                      ? const Divider(
+                      ? Divider(
                           height: 0.0,
-                          color: Colors.grey,
+                          color: theme.dividerColor,
                           thickness: 1.5,
                           endIndent: 15.0,
                           indent: 15.0,

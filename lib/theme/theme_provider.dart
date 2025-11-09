@@ -116,7 +116,7 @@ class ThemeProvider with ChangeNotifier {
       useMaterial3: true,
       brightness: Brightness.dark,
       primarySwatch: Colors.teal,
-      primaryColor: const Color(0xFF2DD4BF),
+      primaryColor: Colors.teal,
       scaffoldBackgroundColor: const Color(0xFF0F172A),
       cardColor: const Color(0xFF1E293B),
       appBarTheme: const AppBarTheme(
@@ -146,7 +146,7 @@ class ThemeProvider with ChangeNotifier {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFF2DD4BF), width: 2),
+          borderSide: const BorderSide(color: Colors.teal, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
@@ -177,7 +177,7 @@ class ThemeProvider with ChangeNotifier {
         ),
       ),
       colorScheme: const ColorScheme.dark(
-        primary: Color(0xFF2DD4BF),
+        primary: Colors.teal,
         secondary: Color(0xFFF87171),
         surface: Color(0xFF1E293B),
         background: Color(0xFF0F172A),

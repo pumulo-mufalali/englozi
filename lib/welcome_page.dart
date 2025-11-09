@@ -55,7 +55,7 @@ class _WelcomePageState extends State<WelcomePage> {
     } else {
       final isFocused = _focuses == index;
       final cardColors = [
-        [const Color(0xFF14B8A6), const Color(0xFF2DD4BF)],
+        [const Color(0xFF14B8A6), Colors.teal],
         [const Color(0xFF6366F1), const Color(0xFF8B5CF6)],
         [const Color(0xFFF59E0B), const Color(0xFFFBBF24)],
       ];
