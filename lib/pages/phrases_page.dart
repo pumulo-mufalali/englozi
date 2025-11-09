@@ -74,146 +74,201 @@ class _PhrasesPageState extends State<PhrasesPage> {
   @override
   Widget build(BuildContext context) {
     keyword ??= '';
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      drawer: const DrawerPage(),
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Colors.teal,
-        foregroundColor: Colors.white,
-        title: const Text('Phrases'),
+        title: const Row(
+          children: [
+            Icon(
+              Icons.chat_bubble_outline_rounded,
+              size: 24,
+            ),
+            SizedBox(width: 8),
+            Text('Phrases'),
+          ],
+        ),
         actions: [
-          Transform.scale(
-            scale: 0.7,
-            child: Switch(
-              value: isSwitched,
-              onChanged: (value) {
-                setState(
-                  () {
-                    isSwitched = value;
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              children: [
+                Icon(
+                  isSwitched ? Icons.translate_rounded : Icons.language_rounded,
+                  size: 18,
+                  color: theme.primaryColor,
+                ),
+                const SizedBox(width: 8),
+                Switch(
+                  value: isSwitched,
+                  onChanged: (value) {
+                    setState(() {
+                      isSwitched = value;
+                    });
                   },
-                );
-              },
-              activeColor: Colors.tealAccent,
+                  activeColor: theme.primaryColor,
+                ),
+              ],
             ),
           ),
         ],
       ),
-      body: Scaffold(
-        drawer: const DrawerPage(),
-        body: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            children: [
-              TextField(
-                onChanged: (value) => _filters(value),
-                cursorColor: Colors.black87,
-                decoration: InputDecoration(
-                  hintText: 'Easy access...',
-                  labelStyle: const TextStyle(
-                    color: Colors.black45,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 25,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  prefixIcon: GestureDetector(
-                    onTap: () => {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const EngloziSwitch(),
-                        ),
-                      ),
-                    },
-                    child: const Icon(
-                      Icons.help_outline,
-                      color: Colors.grey,
-                    ),
-                  ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            TextField(
+              onChanged: (value) => _filters(value),
+              style: theme.textTheme.bodyLarge,
+              decoration: InputDecoration(
+                hintText: 'Search phrases...',
+                hintStyle: TextStyle(
+                  color: isDark
+                      ? const Color(0xFF94A3B8)
+                      : Colors.grey.shade500,
                 ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _foundWords.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 0.0, right: 0.0),
-                      child: Card(
-                        color: Colors.white60,
-                        child: ListTile(
-                          title: RichText(
-                            text: TextSpan(
-                              text: 'Eng: ',
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 16.5,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: _foundWords[index]
-                                          .phrEnglish[0]
-                                          .toUpperCase() +
-                                      _foundWords[index]
-                                          .phrEnglish
-                                          .substring(1),
-                                  style: const TextStyle(
-                                    color: Colors.green,
-                                    fontSize: 15.5,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          subtitle: RichText(
-                            text: TextSpan(
-                              text: 'Lozi: ',
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 16.5,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: _foundWords[index]
-                                          .phrSilozi[0]
-                                          .toUpperCase() +
-                                      _foundWords[index].phrSilozi.substring(1),
-                                  style: const TextStyle(
-                                    color: Colors.blueGrey,
-                                    fontSize: 15.5,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          trailing: InkWell(
-                            child: const Icon(
-                              Icons.volume_up,
-                              color: Colors.grey,
-                            ),
-                            onTap: () {
-                              if (isSwitched != true) {
-                                speakEnglish(_foundWords[index].phrEnglish);
-                              } else {
-                                speakLozi(_foundWords[index].phrSilozi);
-                              }
-                            },
-                          ),
-                        ),
+                prefixIcon: Icon(
+                  Icons.search_rounded,
+                  color: theme.primaryColor,
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    Icons.help_outline_rounded,
+                    color: theme.primaryColor.withOpacity(0.7),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EngloziSwitch(),
                       ),
                     );
                   },
                 ),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _foundWords.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 16,
+                      ),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: theme.primaryColor.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(
+                                  'ENG',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: theme.primaryColor,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  _foundWords[index].phrEnglish[0]
+                                          .toUpperCase() +
+                                      _foundWords[index]
+                                          .phrEnglish
+                                          .substring(1),
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF10B981),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF6366F1)
+                                      .withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: const Text(
+                                  'LOZI',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF6366F1),
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  _foundWords[index].phrSilozi[0]
+                                          .toUpperCase() +
+                                      _foundWords[index].phrSilozi.substring(1),
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    color: const Color(0xFF6366F1),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      trailing: Container(
+                        decoration: BoxDecoration(
+                          color: theme.primaryColor.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.volume_up_rounded,
+                            color: theme.primaryColor,
+                          ),
+                          onPressed: () {
+                            if (isSwitched != true) {
+                              speakEnglish(_foundWords[index].phrEnglish);
+                            } else {
+                              speakLozi(_foundWords[index].phrSilozi);
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

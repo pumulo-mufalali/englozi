@@ -8,7 +8,9 @@ import 'package:englozi/model/tra_model.dart';
 import 'package:englozi/model/his_model.dart';
 import 'package:englozi/pages/pronounciation_page.dart';
 import 'package:englozi/pages/word_details_page.dart';
+import 'package:englozi/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DrawerPage extends StatefulWidget {
   const DrawerPage({Key? key}) : super(key: key);
@@ -89,21 +91,88 @@ class _DrawerPageState extends State<DrawerPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.68,
+      width: MediaQuery.of(context).size.width * 0.75,
       child: Drawer(
-        backgroundColor: Colors.white,
         elevation: 0.0,
+        backgroundColor: theme.scaffoldBackgroundColor,
         child: ListView(
+          padding: EdgeInsets.zero,
           children: <Widget>[
-            // const SizedBox(height: 8.0,),
-            InkWell(
-              child: const ListTile(
-                iconColor: Colors.teal,
-                leading: Icon(Icons.volume_up),
-                title: Text('Pronunciation'),
+            Container(
+              height: 180,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: isDark
+                      ? [
+                          theme.primaryColor.withOpacity(0.3),
+                          theme.primaryColor.withOpacity(0.1),
+                        ]
+                      : [
+                          theme.primaryColor,
+                          theme.primaryColor.withOpacity(0.7),
+                        ],
+                ),
               ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: RichText(
+                      text: TextSpan(
+                        text: 'Eng',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 32.0,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.5,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: 'lozi',
+                            style: TextStyle(
+                              color: isDark
+                                  ? const Color(0xFFF87171)
+                                  : const Color(0xFFEF4444),
+                              fontSize: 32.0,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Dictionary & Translator',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.9),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            _buildDrawerItem(
+              context,
+              icon: Icons.volume_up_rounded,
+              title: 'Pronunciation',
               onTap: () {
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -112,31 +181,21 @@ class _DrawerPageState extends State<DrawerPage> {
                 );
               },
             ),
-            const Divider(
-              color: Colors.grey,
-              height: 0.0,
-            ),
-            InkWell(
-              child: const ListTile(
-                iconColor: Colors.teal,
-                leading: Icon(Icons.shuffle),
-                title: Text('Random word'),
-              ),
+            _buildDrawerItem(
+              context,
+              icon: Icons.shuffle_rounded,
+              title: 'Random word',
               onTap: () {
+                Navigator.pop(context);
                 randomSearch();
               },
             ),
-            const Divider(
-              color: Colors.grey,
-              height: 0.0,
-            ),
-            InkWell(
-              child: const ListTile(
-                iconColor: Colors.teal,
-                leading: Icon(Icons.favorite_outlined),
-                title: Text('Favourites'),
-              ),
+            _buildDrawerItem(
+              context,
+              icon: Icons.favorite_outline_rounded,
+              title: 'Favourites',
               onTap: () {
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -145,53 +204,12 @@ class _DrawerPageState extends State<DrawerPage> {
                 );
               },
             ),
-            // const Divider(
-            //   color: Colors.grey,
-            //   height: 0.0,
-            // ),
-            // InkWell(
-            //   child: const ListTile(
-            //     iconColor: Colors.teal,
-            //     leading: Icon(Icons.settings),
-            //     title: Text('Settings'),
-            //   ),
-            //   onTap: () {},
-            // ),
-            const Divider(
-              color: Colors.grey,
-              height: 0.0,
-            ),
-            InkWell(
-              child: const ListTile(
-                iconColor: Colors.teal,
-                leading: Icon(Icons.ad_units),
-                title: Text('About'),
-              ),
-              onTap: () {},
-            ),
-            const Divider(
-              color: Colors.grey,
-              height: 0.0,
-            ),
-            InkWell(
-              child: const ListTile(
-                iconColor: Colors.teal,
-                leading: Icon(Icons.help_outline),
-                title: Text('Help'),
-              ),
-              onTap: () {},
-            ),
-            const Divider(
-              color: Colors.grey,
-              height: 0.0,
-            ),
-            InkWell(
-              child: const ListTile(
-                iconColor: Colors.teal,
-                leading: Icon(Icons.history),
-                title: Text('History'),
-              ),
+            _buildDrawerItem(
+              context,
+              icon: Icons.history_rounded,
+              title: 'History',
               onTap: () {
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -200,27 +218,88 @@ class _DrawerPageState extends State<DrawerPage> {
                 );
               },
             ),
-            const Divider(
-              color: Colors.grey,
-              height: 0.0,
-            ),
-            InkWell(
-              child: const ListTile(
-                iconColor: Colors.grey,
-                leading: Icon(Icons.cancel),
-                title: Text('Exit'),
+            const Divider(height: 1),
+            ListTile(
+              leading: Icon(
+                themeProvider.isDarkMode
+                    ? Icons.light_mode_rounded
+                    : Icons.dark_mode_rounded,
+                color: theme.primaryColor,
               ),
+              title: Text(
+                themeProvider.isDarkMode ? 'Light Mode' : 'Dark Mode',
+                style: theme.textTheme.bodyLarge,
+              ),
+              trailing: Switch(
+                value: themeProvider.isDarkMode,
+                onChanged: (_) => themeProvider.toggleTheme(),
+                activeColor: theme.primaryColor,
+              ),
+            ),
+            const Divider(height: 1),
+            _buildDrawerItem(
+              context,
+              icon: Icons.help_outline_rounded,
+              title: 'Help',
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            _buildDrawerItem(
+              context,
+              icon: Icons.info_outline_rounded,
+              title: 'About',
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            const SizedBox(height: 20),
+            _buildDrawerItem(
+              context,
+              icon: Icons.exit_to_app_rounded,
+              title: 'Exit',
+              isDestructive: true,
               onTap: () {
                 exit(0);
               },
             ),
-            const Divider(
-              color: Colors.grey,
-              height: 0.0,
-            ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildDrawerItem(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    bool isDestructive = false,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: isDestructive
+            ? (isDark ? const Color(0xFFF87171) : const Color(0xFFEF4444))
+            : theme.primaryColor,
+      ),
+      title: Text(
+        title,
+        style: theme.textTheme.bodyLarge?.copyWith(
+          color: isDestructive
+              ? (isDark ? const Color(0xFFF87171) : const Color(0xFFEF4444))
+              : null,
+        ),
+      ),
+      onTap: onTap,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
     );
   }
 }

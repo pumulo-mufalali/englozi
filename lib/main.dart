@@ -1,6 +1,8 @@
 import 'package:englozi/pages/splash_page.dart';
+import 'package:englozi/theme/theme_provider.dart';
 import 'package:englozi/welcome_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,16 +14,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Englozi',
-      theme: ThemeData(
-          primarySwatch: Colors.teal
+    return ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Englozi',
+            theme: themeProvider.lightTheme,
+            darkTheme: themeProvider.darkTheme,
+            themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            home: const SplashScreenPage(),
+            routes: {
+              '/home': (context) => const WelcomePage(),
+            },
+          );
+        },
       ),
-      home: const SplashScreenPage(),
-      routes: {
-        '/home': (context) => const WelcomePage(),
-      },
     );
   }
 }

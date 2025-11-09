@@ -45,47 +45,108 @@ class _WelcomePageState extends State<WelcomePage> {
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey();
 
   Widget _buildItemList(BuildContext context, int index) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     if (_focuses == cards.length) {
       return const Center(
         child: CircularProgressIndicator(),
       );
     } else {
+      final isFocused = _focuses == index;
+      final cardColors = [
+        [const Color(0xFF14B8A6), const Color(0xFF2DD4BF)],
+        [const Color(0xFF6366F1), const Color(0xFF8B5CF6)],
+        [const Color(0xFFF59E0B), const Color(0xFFFBBF24)],
+      ];
+      
       return SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 60),
-            Card(
-              elevation: 15.0,
-              color: Colors.teal,
-              child: ClipRRect(
-                child: SizedBox(
-                  width: 250,
-                  height: 400,
-                  child: InkWell(
-                    child: Center(
-                      child: Text(
-                        cards[index],
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 35.0,
-                          fontWeight: FontWeight.normal,
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              width: isFocused ? 280 : 250,
+              height: isFocused ? 420 : 400,
+              child: Card(
+                elevation: isFocused ? 20.0 : 8.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: isDark
+                          ? [
+                              cardColors[index][0].withOpacity(0.8),
+                              cardColors[index][1].withOpacity(0.6),
+                            ]
+                          : cardColors[index],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: cardColors[index][0].withOpacity(0.3),
+                        blurRadius: isFocused ? 30 : 15,
+                        spreadRadius: isFocused ? 5 : 2,
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(24),
+                      onTap: () async {
+                        if (cards[_focuses] == cards[0]) {
+                          await Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const PhrasesPage()));
+                        } else if (cards[index] == cards[1]) {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const TranslatorPage()));
+                        } else {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const NamesPage()));
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              index == 0
+                                  ? Icons.chat_bubble_outline
+                                  : index == 1
+                                      ? Icons.translate
+                                      : Icons.person_outline,
+                              size: isFocused ? 80 : 70,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              cards[index],
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: isFocused ? 38.0 : 35.0,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.2,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black.withOpacity(0.3),
+                                    blurRadius: 8,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    onTap: () async {
-                      if (cards[_focuses] == cards[0]) {
-                        await Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const PhrasesPage()));
-                      } else if (cards[index] == cards[1]) {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const TranslatorPage()));
-                      } else {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const NamesPage()));
-                      }
-                    },
                   ),
                 ),
               ),
@@ -98,10 +159,11 @@ class _WelcomePageState extends State<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.teal,
-          foregroundColor: Colors.white,
           elevation: 0.0,
           leading: IconButton(
             onPressed: () {
@@ -111,23 +173,27 @@ class _WelcomePageState extends State<WelcomePage> {
                 _scaffoldkey.currentState?.openEndDrawer();
               }
             },
-            icon: const Icon(Icons.dehaze),
+            icon: const Icon(Icons.menu_rounded),
           ),
           title: RichText(
             text: TextSpan(
               text: 'Eng',
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 27.0,
+              style: TextStyle(
+                color: isDark ? Colors.white : Colors.white,
+                fontSize: 28.0,
                 fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
               ),
               children: [
                 TextSpan(
                   text: 'lozi',
                   style: TextStyle(
-                    color: Colors.red.shade700,
-                    fontSize: 27.0,
+                    color: isDark
+                        ? const Color(0xFFF87171)
+                        : const Color(0xFFEF4444),
+                    fontSize: 28.0,
                     fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
                   ),
                 ),
               ],
@@ -136,30 +202,66 @@ class _WelcomePageState extends State<WelcomePage> {
         ),
         drawer: const DrawerPage(),
         key: _scaffoldkey,
-        body: Column(
-          children: [
-            const SizedBox(height: 10),
-            const Text(
-              ' << Swipe >> ',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 35.0,
-                fontWeight: FontWeight.bold,
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: isDark
+                ? null
+                : LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      theme.scaffoldBackgroundColor,
+                      theme.scaffoldBackgroundColor.withOpacity(0.95),
+                    ],
+                  ),
+          ),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? theme.cardColor.withOpacity(0.5)
+                      : theme.primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.swipe_rounded,
+                      color: theme.primaryColor,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Swipe to explore',
+                      style: TextStyle(
+                        color: theme.primaryColor,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-              child: ScrollSnapList(
-                itemBuilder: _buildItemList,
-                itemSize: 250,
-                initialIndex: 1,
-                duration: 100,
-                itemCount: cards.length,
-                dynamicItemSize: true,
-                onItemFocus: _onItemFocus,
+              const SizedBox(height: 20),
+              Expanded(
+                child: ScrollSnapList(
+                  itemBuilder: _buildItemList,
+                  itemSize: 250,
+                  initialIndex: 1,
+                  duration: 200,
+                  itemCount: cards.length,
+                  dynamicItemSize: true,
+                  onItemFocus: _onItemFocus,
+                ),
               ),
-            ),
-            const SizedBox(height: 15.0),
-          ],
+              const SizedBox(height: 30.0),
+            ],
+          ),
         ),
     );
   }
