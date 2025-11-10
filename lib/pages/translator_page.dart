@@ -87,16 +87,7 @@ class _TranslatorPageState extends State<TranslatorPage> {
           },
           icon: const Icon(Icons.arrow_back_rounded),
         ),
-        title: const Row(
-          children: [
-            Icon(
-              Icons.translate_rounded,
-              size: 24,
-            ),
-            SizedBox(width: 8),
-            Text('Translator'),
-          ],
-        ),
+        title: const Text("Translator"),
         elevation: 0,
       ),
       body: Padding(

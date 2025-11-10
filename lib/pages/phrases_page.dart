@@ -1,8 +1,8 @@
 import 'package:englozi/databases/phrases_db.dart';
 import 'package:englozi/features/drawer.dart';
 import 'package:englozi/model/phr_model.dart';
+import 'package:englozi/pages/phrases_details_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:englozi/features/help/englozi_switch.dart';
 
 class PhrasesPage extends StatefulWidget {
@@ -14,16 +14,12 @@ class PhrasesPage extends StatefulWidget {
 
 class _PhrasesPageState extends State<PhrasesPage> {
   late PhrasesDB _phrasesDB;
-  bool isSwitched = false;
 
   @override
   void initState() {
     super.initState();
     _phrasesDB = PhrasesDB.instance;
     _phrasesDB.database;
-    getData();
-
-    flutterTts.awaitSpeakCompletion(true);
   }
 
   List<PhraseDictionary> _foundWords = [];
@@ -31,11 +27,9 @@ class _PhrasesPageState extends State<PhrasesPage> {
   String? keyword;
 
   void _filters(String key) async {
-    keyword = key;
+    keyword = key.isEmpty ? null : key;
     List<PhraseDictionary> results = [];
-    if (keyword!.isEmpty) {
-      getData();
-    } else {
+    if (keyword != null && keyword!.isNotEmpty) {
       results = await _phrasesDB.searchWords(key);
     }
     setState(() {
@@ -43,37 +37,8 @@ class _PhrasesPageState extends State<PhrasesPage> {
     });
   }
 
-  void getData() async {
-    List<PhraseDictionary> results = [];
-    results = await _phrasesDB.queryAll();
-    setState(() {
-      _foundWords = results;
-    });
-  }
-
-  final FlutterTts flutterTts = FlutterTts();
-
-  void speakLozi(String text) async {
-    await flutterTts.stop();
-    // await flutterTts.setPitch(0.5);
-    await flutterTts.setVolume(1.0);
-    await flutterTts.setLanguage("sw");
-    await flutterTts.setSpeechRate(0.4);
-    await flutterTts.speak(text);
-  }
-
-  speakEnglish(String text) async {
-    await flutterTts.stop();
-    await flutterTts.setPitch(0.5);
-    await flutterTts.setVolume(1.0);
-    await flutterTts.setLanguage("en");
-    await flutterTts.setSpeechRate(0.4);
-    return await flutterTts.speak(text);
-  }
-
   @override
   Widget build(BuildContext context) {
-    keyword ??= '';
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -81,38 +46,22 @@ class _PhrasesPageState extends State<PhrasesPage> {
       drawer: const DrawerPage(),
       appBar: AppBar(
         elevation: 0.0,
-        title: const Row(
-          children: [
-            Icon(
-              Icons.chat_bubble_outline_rounded,
-              size: 24,
-            ),
-            SizedBox(width: 8),
-            Text('Phrases'),
-          ],
-        ),
+        title: const Text("Phrases"),
         actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Row(
-              children: [
-                Icon(
-                  isSwitched ? Icons.translate_rounded : Icons.language_rounded,
-                  size: 18,
-                  color: theme.primaryColor,
-                ),
-                const SizedBox(width: 8),
-                Switch(
-                  value: isSwitched,
-                  onChanged: (value) {
-                    setState(() {
-                      isSwitched = value;
-                    });
-                  },
-                  activeColor: theme.primaryColor,
-                ),
-              ],
+          IconButton(
+            icon: Icon(
+              Icons.help_outline_rounded,
+              color: theme.primaryColor.withOpacity(0.7),
             ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EngloziSwitch(),
+                ),
+              );
+            },
+            tooltip: 'Help',
           ),
         ],
       ),
@@ -121,6 +70,7 @@ class _PhrasesPageState extends State<PhrasesPage> {
         child: Column(
           children: [
             TextField(
+              textInputAction: TextInputAction.search,
               onChanged: (value) => _filters(value),
               style: theme.textTheme.bodyLarge,
               decoration: InputDecoration(
@@ -134,139 +84,101 @@ class _PhrasesPageState extends State<PhrasesPage> {
                   Icons.search_rounded,
                   color: theme.primaryColor,
                 ),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    Icons.help_outline_rounded,
-                    color: theme.primaryColor.withOpacity(0.7),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const EngloziSwitch(),
-                      ),
-                    );
-                  },
-                ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             Expanded(
-              child: ListView.builder(
-                itemCount: _foundWords.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 16,
-                      ),
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
+              child: keyword != null && keyword!.isNotEmpty
+                  ? (_foundWords.isNotEmpty
+                      ? ListView.builder(
+                          itemCount: _foundWords.length,
+                          itemBuilder: (context, index) {
+                            return Card(
+                              margin: const EdgeInsets.only(bottom: 12),
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 12,
                                 ),
-                                decoration: BoxDecoration(
-                                  color: theme.primaryColor.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  'ENG',
-                                  style: TextStyle(
-                                    fontSize: 11,
+                                title: Text(
+                                  _foundWords[index].phrEnglish[0].toUpperCase() +
+                                      _foundWords[index].phrEnglish.substring(1),
+                                  style: theme.textTheme.titleLarge?.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: theme.primaryColor,
-                                    letterSpacing: 1,
                                   ),
+                                ),
+                                subtitle: const SizedBox(height: 4),
+                                trailing: Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  size: 16,
+                                  color: theme.primaryColor.withOpacity(0.6),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => PhrasesDetailsPage(
+                                        phrase: _foundWords[index],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        )
+                      : Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.search_off_rounded,
+                                size: 64,
+                                color: theme.colorScheme.onSurface.withOpacity(0.3),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'Phrase not found',
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                  color: theme.colorScheme.onSurface.withOpacity(0.6),
                                 ),
                               ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  _foundWords[index].phrEnglish[0]
-                                          .toUpperCase() +
-                                      _foundWords[index]
-                                          .phrEnglish
-                                          .substring(1),
-                                  style: theme.textTheme.bodyLarge?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    color: const Color(0xFF10B981),
-                                  ),
-                                ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Try searching for a different phrase',
+                                style: theme.textTheme.bodyMedium,
                               ),
                             ],
                           ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF6366F1)
-                                      .withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: const Text(
-                                  'LOZI',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF6366F1),
-                                    letterSpacing: 1,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  _foundWords[index].phrSilozi[0]
-                                          .toUpperCase() +
-                                      _foundWords[index].phrSilozi.substring(1),
-                                  style: theme.textTheme.bodyLarge?.copyWith(
-                                    color: const Color(0xFF6366F1),
-                                  ),
-                                ),
-                              ),
-                            ],
+                        ))
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.search_rounded,
+                            size: 64,
+                            color: theme.primaryColor.withOpacity(0.3),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Start searching',
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              color: theme.colorScheme.onSurface.withOpacity(0.6),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Enter a phrase to view details',
+                            style: theme.textTheme.bodyMedium,
                           ),
                         ],
                       ),
-                      trailing: Container(
-                        decoration: BoxDecoration(
-                          color: theme.primaryColor.withOpacity(0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.volume_up_rounded,
-                            color: theme.primaryColor,
-                          ),
-                          onPressed: () {
-                            if (isSwitched != true) {
-                              speakEnglish(_foundWords[index].phrEnglish);
-                            } else {
-                              speakLozi(_foundWords[index].phrSilozi);
-                            }
-                          },
-                        ),
-                      ),
                     ),
-                  );
-                },
-              ),
             ),
           ],
         ),

@@ -1,6 +1,7 @@
 import 'package:englozi/databases/loziname_db.dart';
 import 'package:englozi/features/drawer.dart';
 import 'package:englozi/model/loz_model.dart';
+import 'package:englozi/pages/names_details_page.dart';
 import 'package:flutter/material.dart';
 
 class NamesPage extends StatefulWidget {
@@ -18,7 +19,6 @@ class _NamesPageState extends State<NamesPage> {
     super.initState();
     _loziNameDB = LoziNameDB.instance;
     _loziNameDB.database;
-    getData();
   }
 
   List<LoziDictionary> _foundWords = [];
@@ -26,13 +26,11 @@ class _NamesPageState extends State<NamesPage> {
   String? keyword;
 
   void _filters(String key) async {
-    keyword = key;
+    keyword = key.isEmpty ? null : key;
 
     List<LoziDictionary> results = [];
 
-    if (keyword!.isEmpty) {
-      getData();
-    } else {
+    if (keyword != null && keyword!.isNotEmpty) {
       results = await _loziNameDB.searchWords(key);
     }
 
@@ -41,17 +39,8 @@ class _NamesPageState extends State<NamesPage> {
     });
   }
 
-  void getData() async {
-    List<LoziDictionary> results = [];
-    results = await _loziNameDB.queryAll();
-    setState(() {
-      _foundWords = results;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    keyword ??= '';
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -63,22 +52,14 @@ class _NamesPageState extends State<NamesPage> {
       drawer: const DrawerPage(),
       appBar: AppBar(
         elevation: 0.0,
-        title: const Row(
-          children: [
-            Icon(
-              Icons.person_outline_rounded,
-              size: 24,
-            ),
-            SizedBox(width: 8),
-            Text('Lozi Names'),
-          ],
-        ),
+        title: const Text("Lozi Names"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
             TextField(
+              textInputAction: TextInputAction.search,
               onChanged: (value) => _filters(value),
               style: theme.textTheme.bodyLarge,
               decoration: InputDecoration(
@@ -94,97 +75,100 @@ class _NamesPageState extends State<NamesPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             Expanded(
-              child: ListView.builder(
-                itemCount: _foundWords.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+              child: keyword != null && keyword!.isNotEmpty
+                  ? (_foundWords.isNotEmpty
+                      ? ListView.builder(
+                          itemCount: _foundWords.length,
+                          itemBuilder: (context, index) {
+                            return Card(
+                              margin: const EdgeInsets.only(bottom: 12),
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 12,
+                                ),
+                                title: Text(
+                                  _foundWords[index].name.replaceFirst(
+                                    _foundWords[index].name[0],
+                                    _foundWords[index].name[0].toUpperCase(),
+                                  ),
+                                  style: theme.textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: theme.primaryColor,
+                                  ),
+                                ),
+                                trailing: Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  size: 16,
+                                  color: theme.primaryColor.withOpacity(0.6),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => NamesDetailsPage(
+                                        name: _foundWords[index],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        )
+                      : Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.search_off_rounded,
+                                size: 64,
+                                color: theme.colorScheme.onSurface.withOpacity(0.3),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'Name not found',
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Try searching for a different name',
+                                style: theme.textTheme.bodyMedium,
+                              ),
+                            ],
+                          ),
+                        ))
+                  : Center(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Center(
-                            child: Text(
-                              _foundWords[index].name.replaceFirst(
-                                _foundWords[index].name[0],
-                                _foundWords[index].name[0].toUpperCase(),
-                              ),
-                              style: theme.textTheme.titleLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: theme.primaryColor,
-                                fontSize: 22,
-                              ),
+                          Icon(
+                            Icons.search_rounded,
+                            size: 64,
+                            color: theme.primaryColor.withOpacity(0.3),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Start searching',
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              color: theme.colorScheme.onSurface.withOpacity(0.6),
                             ),
                           ),
-                          if (_foundWords[index].lozMean!.isNotEmpty) ...[
-                            const SizedBox(height: 12),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.info_outline_rounded,
-                                  size: 18,
-                                  color: theme.primaryColor.withOpacity(0.7),
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  'Meaning:',
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    color: theme.primaryColor.withOpacity(0.8),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 6),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 24),
-                              child: Text(
-                                _foundWords[index].lozMean!,
-                                style: theme.textTheme.bodyLarge,
-                              ),
-                            ),
-                          ],
-                          if (_foundWords[index].origin!.isNotEmpty) ...[
-                            const SizedBox(height: 12),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.public_rounded,
-                                  size: 18,
-                                  color: theme.primaryColor.withOpacity(0.7),
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  'Origin:',
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    color: theme.primaryColor.withOpacity(0.8),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 6),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 24),
-                              child: Text(
-                                _foundWords[index].origin!,
-                                style: theme.textTheme.bodyLarge,
-                              ),
-                            ),
-                          ],
+                          const SizedBox(height: 8),
+                          Text(
+                            'Enter a name to view details',
+                            style: theme.textTheme.bodyMedium,
+                          ),
                         ],
                       ),
                     ),
-                  );
-                },
-              ),
             ),
           ],
         ),
